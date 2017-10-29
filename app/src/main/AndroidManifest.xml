@@ -3,6 +3,7 @@
           package="com.orangex.amazingfellow">
 
     <application
+        android:name=".AFApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

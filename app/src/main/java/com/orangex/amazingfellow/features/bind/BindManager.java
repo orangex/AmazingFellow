@@ -6,6 +6,7 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.orangex.amazingfellow.R;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
@@ -33,9 +34,18 @@ public class BindManager {
                 .map(new Function<String, String>() {
                     @Override
                     public String apply(String input) throws Exception {
-                        Pattern.compile(".*steamcommunity\\.com/profiles/(\\d+)").matcher(input).matches()
-
+                        Matcher matcherProfiles = Pattern.compile(".*steamcommunity\\.com/profiles/(\\d+)").matcher(input);
+                        Matcher matcherID = Pattern.compile(".*steamcommunity\\.com/id/(.+)").matcher(input);
+                        if (matcherProfiles.matches()) {
+                            return matcherProfiles.group(1);
+                        } else if (matcherID.matches()) {
+                            return
+                                    matcherID.group(1);
+                        } else {
+                            throw new Exception("匹配失败");
+                        }
                     }
                 })
+                .
     }
 }

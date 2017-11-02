@@ -15,6 +15,6 @@ public interface ISteamApiService  {
     Observable<ResolveVanityURLResultData> getSteamIdByVanityUrl(@Query("key") String key, @Query("vanityurl") String vanityurl);
 
     @GET("IDOTA2Match_570/GetMatchHistory/V001/")
-    Observable<MatchHistoryResultData> getMatchHistory(@Query("account_id") String steamId, @Query("start_at_match_id") String mostRecentMatchID);
+    Observable<MatchHistoryResultData> getMatchHistory(@Query("account_id") String steamId, @Query("start_at_match_id") long mostRecentMatchID);
 
 }

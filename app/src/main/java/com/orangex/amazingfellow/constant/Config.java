@@ -5,4 +5,6 @@ package com.orangex.amazingfellow.constant;
  */
 
 public class Config {
+    public static final String STEAM_API_KEY = "97E4786DA1847BCFCFA79F015A1CCF25";
+
 }

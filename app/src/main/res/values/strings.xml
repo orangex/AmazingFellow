@@ -3,8 +3,14 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_home_page">HomePageActivity</string>
-    <string name="bind_steam_dialog_title">绑定 Steam ID</string>
-    <string name="bind_steam_dialog_tip">将你的 Steam 个人主页的网址复制至此即可</string>
-    <string name="bind_steam_dialog_input_hint">like http://steamcommunity.com/profiles/123 or http://steamcommunity.com/id/abc</string>
-    <string name="bind_steam_dialog_input_prefill"/>
+    <string name="title_dialog_bind_steam">绑定 Steam ID</string>
+    <string name="tip_dialog_bind_steam">将你的 Steam 个人主页的网址复制至此即可</string>
+    <string name="input_hint_dialog_bind_steam">like http://steamcommunity.com/profiles/123 or http://steamcommunity.com/id/abc</string>
+    <string name="input_prefill_dialog_bind_steam"></string>
+    <string name="error_steam_vanityurl_pattern_match_failed">链接无效，请检测你提供的链接</string>
+    <string name="error_steam_vanityurl_api_match_failed">匹配失败，请检查你的链接</string>
+    <string name="error_steam_vanityurl_api_failed_unkown">匹配失败，未知原因</string>
+    <string name="content_progress_dialog">请稍后</string>
+
+
 </resources>

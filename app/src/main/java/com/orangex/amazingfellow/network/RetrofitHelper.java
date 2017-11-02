@@ -21,7 +21,7 @@ public class RetrofitHelper {// TODO: 2017/10/28 静态成员 or 单例，类的
     private static final int DEFAULT_TIMEOUT = 3;
     private static HashMap<String, Object> sServicemap;// TODO: 2017/10/28 hashmap 优化？
     
-    public <S> S getService(Class<S> serviceClass) {
+    public static  <S> S getService(Class<S> serviceClass) {
         if (sServicemap.containsKey(serviceClass.getName())) {
             return (S) sServicemap.get(serviceClass.getName());
         } else {
@@ -31,7 +31,7 @@ public class RetrofitHelper {// TODO: 2017/10/28 静态成员 or 单例，类的
         }
     }
     
-    private <S> S createService(Class<S> serviceClass) {
+    private static <S> S createService(Class<S> serviceClass) {
         //custom OkHttp
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         //time our
@@ -48,7 +48,7 @@ public class RetrofitHelper {// TODO: 2017/10/28 静态成员 or 单例，类的
         return createService(serviceClass, httpClient.build());
     }
     
-    private <S> S createService(Class<S> serviceClass, OkHttpClient okHttpClient) {
+    private static <S> S createService(Class<S> serviceClass, OkHttpClient okHttpClient) {
         String baseUrl = "";
         try {
             Field field1 = serviceClass.getField("baseUrl");

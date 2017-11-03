@@ -66,7 +66,9 @@ public class BindManager {
                 .doOnNext(new Consumer<String>() {
                     @Override
                     public void accept(String steamId) throws Exception {
+                        long steamID32 = Long.valueOf(steamId) - Config.STEAM_ID_64_TO_32;
                         EasySP.init(AFApplication.getAppContext()).putString(PrefKeys.KEY_STEAM_ID, steamId);
+                        EasySP.init(AFApplication.getAppContext()).putString(PrefKeys.KEY_STEAM_ID_32, Long.toString(steamID32));
                     }
                 })
                 .onErrorReturn(new Function<Exception, Exception>() {

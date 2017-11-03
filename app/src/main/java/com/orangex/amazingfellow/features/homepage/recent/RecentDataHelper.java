@@ -3,6 +3,7 @@ package com.orangex.amazingfellow.features.homepage.recent;
 import android.text.TextUtils;
 
 import com.orangex.amazingfellow.AFApplication;
+import com.orangex.amazingfellow.constant.Config;
 import com.orangex.amazingfellow.constant.PrefKeys;
 import com.orangex.amazingfellow.network.RetrofitHelper;
 import com.orangex.amazingfellow.network.steam.ISteamApiService;
@@ -10,14 +11,15 @@ import com.orangex.amazingfellow.network.steam.MatchHistoryResultData;
 import com.orangex.amazingfellow.network.steam.MatchHistoryResultData.ResultBean.MatchesBean;
 import com.white.easysp.EasySP;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -78,7 +80,8 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
                 .filter(new Predicate<MatchesBean>() {
                     @Override
                     public boolean test(MatchesBean matchesBean) throws Exception {
-                        
+                        String steamId32 = EasySP.init(AFApplication.getAppContext()).getString(PrefKeys.KEY_STEAM_ID_32);
+                        Document document=Jsoup.connect(Config.DOTA_MAX_MATCH_DETAIL_PREFIX+matchesBean.getMatch_id()).get();
                         
                         
                         

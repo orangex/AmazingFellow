@@ -5,5 +5,6 @@ package com.orangex.amazingfellow.constant;
  */
 
 public class PrefKeys {
+    public static final String KEY_STEAM_ID_32 = "steam_id_32";
     public static String KEY_STEAM_ID = "steam_id";
 }

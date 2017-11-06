@@ -15,6 +15,7 @@ import com.orangex.amazingfellow.network.steam.ISteamApiService;
 import com.orangex.amazingfellow.network.steam.ResolveVanityURLResultBean;
 import com.orangex.amazingfellow.rx.ApiException;
 import com.orangex.amazingfellow.rx.ResponseException;
+import com.orangex.amazingfellow.utils.SteamUtil;
 import com.white.easysp.EasySP;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class BindManager {
                 .doOnNext(new Consumer<String>() {
                     @Override
                     public void accept(String steamId) throws Exception {
-                        long steamID32 = Long.valueOf(steamId) - Config.STEAM_ID_64_TO_32;
+                        long steamID32 = Long.parseLong(SteamUtil.getSteamID32By64(steamId));
                         EasySP.init(AFApplication.getAppContext()).putString(PrefKeys.STEAM_ID, steamId);
                         EasySP.init(AFApplication.getAppContext()).putString(PrefKeys.STEAM_ID_32, Long.toString(steamID32));
                         Log.d(TAG, "2,steam 32 build");

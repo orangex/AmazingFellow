@@ -291,7 +291,7 @@ public class DotaMatchDetailResultBean {
              * ability_upgrades : [{"ability":5496,"time":440,"level":1},{"ability":5495,"time":532,"level":2},{"ability":5494,"time":576,"level":3},{"ability":5494,"time":707,"level":4},{"ability":5494,"time":780,"level":5},{"ability":5497,"time":938,"level":6},{"ability":5494,"time":1069,"level":7},{"ability":5496,"time":1139,"level":8},{"ability":5495,"time":1295,"level":9},{"ability":6158,"time":1363,"level":10},{"ability":5495,"time":1461,"level":11},{"ability":5497,"time":1551,"level":12},{"ability":5495,"time":1693,"level":13},{"ability":5496,"time":1773,"level":14},{"ability":6145,"time":1886,"level":15},{"ability":5496,"time":1967,"level":16},{"ability":5497,"time":2337,"level":17},{"ability":6021,"time":2353,"level":18}]
              */
             
-            private int account_id;
+            private long account_id;
             private int player_slot;
             private int hero_id;
             private int item_0;
@@ -322,11 +322,11 @@ public class DotaMatchDetailResultBean {
             private int scaled_hero_healing;
             private List<AbilityUpgradesBean> ability_upgrades;
             
-            public int getAccount_id() {
+            public long getAccount_id() {
                 return account_id;
             }
             
-            public void setAccount_id(int account_id) {
+            public void setAccount_id(long account_id) {
                 this.account_id = account_id;
             }
             

@@ -11,8 +11,9 @@ import java.util.List;
 public class DotaMatchModel extends MatchModel {
     private static final int GLORY_KILL = 1;
     private static final int GLORY_ASSIS = 2;
-    private static final int GLORY_KILL = 1;
-    
+    private static final int GLORY_ = 3;
+
+    private String steamID64;
     private int hero;
     private int kills;
     private int deaths;
@@ -97,7 +98,7 @@ public class DotaMatchModel extends MatchModel {
     
     @Override
     public String toString() {
-        return "MatchModel{" +
+        return "DotaMatchModel{" +
                 "hero=" + hero +
                 ", kills=" + kills +
                 ", deaths=" + deaths +
@@ -119,5 +120,21 @@ public class DotaMatchModel extends MatchModel {
     
     public void setScaledDamage(int scaledDamage) {
         this.scaledDamage = scaledDamage;
+    }
+
+    public List<Integer> getGlorys() {
+        return glorys;
+    }
+
+    public void setGlorys(List<Integer> glorys) {
+        this.glorys = glorys;
+    }
+
+    public String getSteamID64() {
+        return steamID64;
+    }
+
+    public void setSteamID64(String steamID64) {
+        this.steamID64 = steamID64;
     }
 }

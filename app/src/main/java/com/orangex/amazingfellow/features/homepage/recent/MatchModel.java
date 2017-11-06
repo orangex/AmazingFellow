@@ -13,10 +13,16 @@ public class MatchModel {
     private int type;
     private long startAt;
     private long duration;
-    
+    private String id;
+
+    public MatchModel(int type, String id) {
+        this.type = type;
+        this.id = id;
+    }
     public MatchModel(int type){
         this.type = type;
     }
+
     public MatchModel(int type, long startAt) {
         this.type = type;
         this.startAt = startAt;
@@ -54,5 +60,12 @@ public class MatchModel {
                 ", duration=" + duration +
                 '}';
     }
-    
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

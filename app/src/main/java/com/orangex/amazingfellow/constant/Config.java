@@ -13,4 +13,6 @@ public class Config {
     
     public static final int MAX_MATCH_COUNT_LOAD_ONCE = 10;
     public static final int MAX_PAGE_COUNT_TO_SPIDE = 5;
+    public static final long MAX_TIME_LOAD_ONCE = 3;
+
 }

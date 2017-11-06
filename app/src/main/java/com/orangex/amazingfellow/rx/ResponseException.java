@@ -1,6 +1,8 @@
 package com.orangex.amazingfellow.rx;
 
 import com.alibaba.fastjson.JSONException;
+import com.orangex.amazingfellow.R;
+import com.orangex.amazingfellow.base.AFApplication;
 
 import retrofit2.HttpException;
 
@@ -40,17 +42,25 @@ public class ResponseException extends Exception {
      */
     public static final int UNKOWNHOST_ERROR = 0x7;
 
-
-    private int code;
+    
     //用于展示的异常信息
     private String displayMessage;
-
-
-    public ResponseException(String message, Throwable throwable) {
-        super(message, throwable);
+    
+    ResponseException(String message, Throwable throwable) {
+        new ResponseException(message, throwable, message);
     }
-
-
+    ResponseException(String message, Throwable throwable,String displayMessage) {
+        super(message, throwable);
+        this.displayMessage = displayMessage;
+    }
+    public ResponseException(String message, String displayMessage) {
+        super(message);
+        this.displayMessage = displayMessage;
+    }
+    public ResponseException(String message) {
+        super(message);
+        this.displayMessage = message;
+    }
 
     public void setDisplayMessage(String displayMessage) {
         this.displayMessage = displayMessage;
@@ -59,33 +69,29 @@ public class ResponseException extends Exception {
     public String getDisplayMessage() {
         return displayMessage;
     }
-
-    public int getCode() {
-        return code;
-    }
+    
 
     public static ResponseException generateResponseException(Exception e) {
-
-        if (e instanceof HttpException) {
+        if (e instanceof ResponseException) {
+            return (ResponseException) e;
+        }else if (e instanceof HttpException) {
             HttpException httpException = (HttpException) e;
             //Log.w(TAG, httpException.getMessage(), httpException);
             ResponseException responseException = new ResponseException(httpException.getMessage(), httpException);
-            responseException.setDisplayMessage(HTTP_ERROR + " 服务器异常");
+            responseException.setDisplayMessage(AFApplication.getAppContext().getString(R.string.error_server_default));
             return responseException;
         } else if (e instanceof ApiException) {
             ApiException apiException = (ApiException) e;
             ResponseException responseException = new ResponseException(apiException.getMessage(), apiException);
-            responseException.setDisplayMessage(API_ERROR + " 服务器异常");
+            responseException.setDisplayMessage(apiException.getDisplayMessage());
             return responseException;
         } else if (e instanceof JSONException) {
             JSONException jsonException = (JSONException) e;
             ResponseException responseException = new ResponseException(jsonException.getMessage(), jsonException);
-            responseException.setDisplayMessage(JSON_ERROR + " 结果解析异常");
+            responseException.setDisplayMessage(AFApplication.getAppContext().getString(R.string.error_server_default));
             return responseException;
         } else {
-            ResponseException responseException = new ResponseException(e.getMessage(), e);
-            responseException.setDisplayMessage(UNKNOWN_ERROR + " " + e.getMessage());
-            return responseException;
+            return new ResponseException(e.getMessage(), e);
         }
 
     }

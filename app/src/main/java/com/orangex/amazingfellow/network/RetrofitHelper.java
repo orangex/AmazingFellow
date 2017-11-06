@@ -1,6 +1,6 @@
 package com.orangex.amazingfellow.network;
 
-import com.orangex.amazingfellow.AFApplication;
+import com.orangex.amazingfellow.base.AFApplication;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.fastjson.FastJsonConverterFactory;
@@ -19,7 +20,7 @@ import retrofit2.converter.fastjson.FastJsonConverterFactory;
 
 public class RetrofitHelper {// TODO: 2017/10/28 静态成员 or 单例，类的构造到底应不应该依赖 context
     private static final int DEFAULT_TIMEOUT = 3;
-    private static HashMap<String, Object> sServicemap;// TODO: 2017/10/28 hashmap 优化？
+    private static HashMap<String, Object> sServicemap = new HashMap<>();// TODO: 2017/10/28 hashmap 优化？
     
     public static  <S> S getService(Class<S> serviceClass) {
         if (sServicemap.containsKey(serviceClass.getName())) {
@@ -33,7 +34,10 @@ public class RetrofitHelper {// TODO: 2017/10/28 静态成员 or 单例，类的
     
     private static <S> S createService(Class<S> serviceClass) {
         //custom OkHttp
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+                .addInterceptor(interceptor);
         //time our
         httpClient.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         httpClient.writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);

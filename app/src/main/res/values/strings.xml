@@ -8,9 +8,9 @@
     <string name="input_hint_dialog_bind_steam">like http://steamcommunity.com/profiles/123 or http://steamcommunity.com/id/abc</string>
     <string name="input_prefill_dialog_bind_steam"></string>
     <string name="error_steam_vanityurl_pattern_match_failed">链接无效，请检测你提供的链接</string>
-    <string name="error_steam_vanityurl_api_match_failed">匹配失败，请检查你的链接</string>
-    <string name="error_steam_vanityurl_api_failed_unkown">匹配失败，未知原因</string>
+    <string name="error_steam_vanityurl_api_match_failed">匹配 Steam ID 失败，请检查你的链接</string>
+    <string name="error_steam_vanityurl_api_failed_unkown">匹配 Steam ID 失败，未知原因</string>
     <string name="content_progress_dialog">请稍后</string>
-
+    <string name="error_server_default">服务器有猫病啦</string>
 
 </resources>

@@ -1,24 +1,96 @@
 package com.orangex.amazingfellow.features.homepage.recent;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.orangex.amazingfellow.R;
+import com.orangex.amazingfellow.base.BaseFragment;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+
+import java.util.List;
+
+import butterknife.BindView;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class RecentFragment extends Fragment {
+public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load of Fragment
+    @BindView(R.id.rcv_recent)
+    RecyclerView mRcvRecent;
+    
+    @BindView(R.id.refreshLayout_recent)
+    SmartRefreshLayout mSmartRefreshLayoutRecent;
+    
+    private RecentDataAdapter mRecentDataAdapter;
+    
+    
+    private SingleObserver<List<MatchModel>> mGetRecentDataObserver = new SingleObserver<List<MatchModel>>() {
+        @Override
+        public void onSubscribe(Disposable d) {
+        
+        }
+    
+        @Override
+        public void onSuccess(List<MatchModel> recentDotaDataModels) {
+            mRecentDataAdapter.addDatas(recentDotaDataModels);
+        }
+    
+    
+        @Override
+        public void onError(Throwable e) {
+        
+        }
+    };
+    
+//    public static RecentFragment newInstance(){
+//        return newInstance(null);
+//    }
+//    public static RecentFragment newInstance(Bundle bundle){
+//        RecentFragment recentFragment = new RecentFragment();
+//        if (bundle != null) {
+//            recentFragment.setArguments(bundle);
+//        }
+//        return recentFragment;
+//    }
 
     public RecentFragment() {
     }
-
+    
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+    }
+    
+    @Override
+    protected void parseArgs(Bundle bundle) {
+    
+    }
+    
+    @Override
+    protected void initViews(View view, Bundle savedInstanceState) {
+        mRecentDataAdapter = new RecentDataAdapter(mContext, null);
+        // TODO: 2017/11/4  mRecentDataAdapter.registerAdapterDataObserver();
+        mRcvRecent.setAdapter(mRecentDataAdapter);
+        mRcvRecent.setLayoutManager(new LinearLayoutManager(mContext));
+    }
+    
+    @Override
+    protected void initDatas(Bundle savedInstanceState) {
+        RecentDataHelper.getRecentMVPMoments(getGetRecentDataObserver());
+    }
+    
+    @Override
+    protected int getLayoutResID() {
+        return R.layout.fragment_home;
+    }
+    
+    public SingleObserver<List<MatchModel>> getGetRecentDataObserver() {
+        return mGetRecentDataObserver;
     }
 }

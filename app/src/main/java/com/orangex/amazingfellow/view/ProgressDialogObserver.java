@@ -17,7 +17,7 @@ import io.reactivex.disposables.Disposable;
  * or you can use doOnSubscribe() operator which can be assigned with a specific method instead
  */
 
-public abstract class ProgressDialogObserver<T> extends ResponseObserver {
+public abstract class ProgressDialogObserver<T> extends ResponseObserver<T> {
     private static final String TAG = ProgressDialogObserver.class.getSimpleName();
     MaterialDialog dialog;
     protected Context context;
@@ -47,6 +47,7 @@ public abstract class ProgressDialogObserver<T> extends ResponseObserver {
     @Override
     public void onError(ResponseException e) {
         Log.w(TAG, "onError: " + e.getMessage(), e);
+        e.printStackTrace();
         dialog.dismiss();
         Toast.makeText(context, e.getDisplayMessage(), Toast.LENGTH_SHORT).show();
     }

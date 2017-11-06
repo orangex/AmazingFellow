@@ -14,7 +14,7 @@ public abstract class ResponseObserver<T> implements Observer<T> {
         if (e instanceof ResponseException) {
             onError((ResponseException) e);
         } else {
-            onError(new ResponseException("not responseexception", e));
+            onError(new ResponseException(e.getMessage(), e));
         }
     }
 

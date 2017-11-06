@@ -1,4 +1,4 @@
-package com.orangex.amazingfellow;
+package com.orangex.amazingfellow.base;
 
 import android.annotation.SuppressLint;
 import android.app.Application;

@@ -1,5 +1,6 @@
 package com.orangex.amazingfellow.features.homepage.recent.dota;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
@@ -10,8 +11,6 @@ import com.orangex.amazingfellow.features.homepage.recent.MatchModel;
 import com.orangex.amazingfellow.network.RetrofitHelper;
 import com.orangex.amazingfellow.network.steam.ISteamApiService;
 import com.orangex.amazingfellow.network.steam.dota.DotaMatchDetailResultBean;
-import com.orangex.amazingfellow.network.steam.dota.DotaMatchDetailResultBean.ResultBean.PlayersBean;
-import com.orangex.amazingfellow.rx.ApiException;
 import com.orangex.amazingfellow.rx.ResponseException;
 import com.orangex.amazingfellow.utils.SteamUtil;
 import com.white.easysp.EasySP;
@@ -22,14 +21,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -38,24 +39,37 @@ import io.reactivex.schedulers.Schedulers;
  * Created by chengyuan.wang on 2017/11/6.
  */
 
-public class RecentDotaMatchHelper {
+public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
     private static final String TAG = RecentDotaMatchHelper.class.getSimpleName();
-
-    public static Observable<MatchModel> getDotaMoments() {
-
+    private static List<MatchModel> sCachedTimeLine = new ArrayList<>();
+    private static HashMap<String, Integer> sOldestMatchPageMap = new HashMap<>();
+    private static List<MatchModel> sLastTimeLine = new ArrayList<>();
+    private static long sOldestMatchID = Long.MAX_VALUE;
+    private static long sLastLatestMatchID = -1;
+    
+    public static void getDotaMoments(boolean isLoadingMore) {
+        
         Set<Observable<DotaMatchModel>> friendMVPMatchObservables = new HashSet<>();
         for (String friendId : EasySP.init(AFApplication.getAppContext()).getStringSet(PrefKeys.DOTA_FRIEND)
                 ) {
-
+            if (!isLoadingMore) {
+                sOldestMatchPageMap.put(friendId, 0);
+                sOldestMatchID = Long.MAX_VALUE;
+                sLastTimeLine = sCachedTimeLine;
+            }
+            if (sLastTimeLine.size() > 0) {
+                sLastLatestMatchID = Long.parseLong(sLastTimeLine.get(0).getId());
+            }
             Observable<DotaMatchModel> observableFriend = Observable.just(friendId)
                     .flatMap(new Function<String, ObservableSource<DotaMatchModel>>() {
                         @Override
                         public ObservableSource<DotaMatchModel> apply(final String friendID64) throws Exception {
                             return Observable.just(friendID64)
                                     .map(new Function<String, Document>() {
-                                        int page = 0;
+                                        int page = sOldestMatchPageMap.get(friendID64);
                                         @Override
                                         public Document apply(String id) throws Exception {
+                                            sOldestMatchPageMap.put(friendID64, page);
                                             page++;
                                             Document document = Jsoup.connect(String.format("http://dotamore.com/match/matchlist/%s.html?p=%d", SteamUtil.getSteamID32By64(id), page)).get();
                                             if (document != null) {
@@ -72,7 +86,6 @@ public class RecentDotaMatchHelper {
                                         public boolean test(Document document) throws Exception {
                                             boolean found404 = document.select("div[class=page404]").size() != 0;
                                             if (found404) {
-
                                                 Log.d(TAG, document.baseUri() + " 404 found");
                                             } else {
                                                 Log.d(TAG, document.baseUri()+"找到一名 dota 玩家！！");
@@ -81,14 +94,28 @@ public class RecentDotaMatchHelper {
                                         }
                                     })
                                     .takeUntil(new Predicate<Document>() {
+                                        String lastpageFirstMatchID = "xowentwt";
                                         @Override
                                         public boolean test(Document document) throws Exception {
-                                            int count = 0;
-                                            Matcher matcherForMatchTableSplit = Pattern.compile("<!-- 头像 -->").matcher(document.text());
-                                            while (matcherForMatchTableSplit.find()) {
-                                                count++;
+    
+                                            try {
+                                                String current = document.select("tbody[class=cursor_pointer]").get(0).child(0).attr("url");
+                                                if (current.equals(lastpageFirstMatchID)) {
+                                                    return true;
+                                                } else {
+                                                    lastpageFirstMatchID = current;
+                                                    return false;
+                                                }
+                                            } catch (NullPointerException | IndexOutOfBoundsException e) {
+                                                Log.w(TAG, "拿不到当前页第一个比赛的 url", e);
+                                                return true;
                                             }
-                                            return (count < 10);
+//                                            int count = 0;
+//                                            Matcher matcherForMatchTableSplit = Pattern.compile("<!-- 头像 -->").matcher(document.text());
+//                                            while (matcherForMatchTableSplit.find()) {
+//                                                count++;
+//                                            }
+//                                            return (count < 10);
 //                                            Matcher matcherForPageNow = Pattern.compile(".*\\?p=(\\d+)").matcher(document.baseUri());
 //                                            if (!matcherForPageNow.matches()) {
 //                                                return false;
@@ -119,7 +146,26 @@ public class RecentDotaMatchHelper {
                                             }
                                             for (Element element : elements
                                                     ) {
+                                                
+                                                
+                                                String id;
+                                                try {
+                                                    id= element.parent().parent().parent().attr("url");
+                                                } catch (NullPointerException e) {
+                                                    Log.w(TAG, "比赛 id 抓取错误", e);
+                                                    continue;
+                                                }
+                                                if (TextUtils.isEmpty(id)) {
+                                                    Log.w(TAG, "比赛 id 抓取为空");
+                                                    continue;
+                                                }
+    
+                                                if (Long.parseLong(id) >= sOldestMatchID) {
+                                                    break;
+                                                }
                                                 DotaMatchModel model = new DotaMatchModel(MatchModel.TYPE_DOTA);
+                                                model.setId(id);
+                                                
                                                 List<Integer> glorys;
                                                 String time = null;
                                                 try {
@@ -129,13 +175,12 @@ public class RecentDotaMatchHelper {
                                                         glorys.add(getGloryIDByClassName(glory.className()));
                                                     }
                                                     model.setGlorys(glorys);
-                                                    model.setId(element.parent().parent().parent().attr("url"));
                                                     time = element.parent().parent().nextElementSibling().nextElementSibling().getElementsByClass("match_table_start_time_color").get(0).text();
                                                 } catch (NullPointerException | IndexOutOfBoundsException e) {
                                                     Log.w(TAG, "抓取比赛 table split 出错", e);
                                                 }
+                                                
                                                 model.setSteamID64(friendID64);
-
                                                 matchModels.add(new Pair<String, DotaMatchModel>(time, model));
                                             }
                                             return Observable.fromIterable(matchModels);
@@ -144,19 +189,27 @@ public class RecentDotaMatchHelper {
                                     .takeWhile(new Predicate<Pair<String, DotaMatchModel>>() {
                                         @Override
                                         public boolean test(Pair<String, DotaMatchModel> stringMatchModelPair) throws Exception {
-
-                                            if (stringMatchModelPair.first == null || stringMatchModelPair.first.contains("天")) {
-                                                Log.d(TAG, "一天前的数据，不再 take ");
-                                                return true;
+    
+                                            if (Long.parseLong(stringMatchModelPair.second.getId()) < sLastLatestMatchID) {
+                                                return false;
                                             }
-                                            Log.d(TAG, "一天内的数据 " + stringMatchModelPair.first);
+                                            String time = stringMatchModelPair.first;
+                                            if (TextUtils.isEmpty(time)) {
+                                                Log.d(TAG, "时间抓取为空 ");
+                                                return true;
+                                            } else {
+                                                if (time.contains("天前") && Integer.parseInt(time.substring(0, time.indexOf("天前"))) >= 30) {
+                                                    Log.d(TAG, "七天前的数据 ");
+                                                    return false;
+                                                }
+                                            }
+                                            Log.d(TAG, "七天内的数据 " + stringMatchModelPair.first);
                                             return true;
                                         }
                                     })
                                     .map(new Function<Pair<String, DotaMatchModel>, DotaMatchModel>() {
                                         @Override
                                         public DotaMatchModel apply(Pair<String, DotaMatchModel> stringMatchModelPair) throws Exception {
-
                                             return stringMatchModelPair.second;
                                         }
                                     })
@@ -166,106 +219,57 @@ public class RecentDotaMatchHelper {
 
             friendMVPMatchObservables.add(observableFriend);
         }
-
-        return Observable.merge(friendMVPMatchObservables)
-                .flatMap(new Function<MatchModel, ObservableSource<MatchModel>>() {
+        Observable.mergeDelayError(friendMVPMatchObservables)
+                .doOnNext(new Consumer<DotaMatchModel>() {
                     @Override
-                    public ObservableSource<MatchModel> apply(final MatchModel matchModel) throws Exception {
-                        return getMatchDetail(matchModel.getId())
-                                .map(new Function<DotaMatchDetailResultBean, MatchModel>() {
-                                    @Override
-                                    public MatchModel apply(DotaMatchDetailResultBean resultBean) throws Exception {
-                                        DotaMatchModel dotaMatchModel = (DotaMatchModel) matchModel;
-                                        dotaMatchModel.setDuration(resultBean.getResult().getDuration());
-                                        int steam32 = Integer.parseInt(SteamUtil.getSteamID32By64(dotaMatchModel.getSteamID64()));
-                                        PlayersBean myPlayerBean = null;
-                                        for (PlayersBean playersBean : resultBean.getResult().getPlayers()
-                                                ) {
-                                            if (playersBean.getAccount_id() == steam32) {
-                                                myPlayerBean = playersBean;
-                                                break;
-                                            }
-                                        }
-                                        if (myPlayerBean == null) {
-                                            throw new ApiException("找不到比赛该玩家的数据");
-                                        }
-                                        dotaMatchModel.setKills(myPlayerBean.getKills());
-                                        dotaMatchModel.setDeaths(myPlayerBean.getDeaths());
-                                        dotaMatchModel.setAssits(myPlayerBean.getAssists());
-                                        dotaMatchModel.setEpm(myPlayerBean.getXp_per_min());
-                                        dotaMatchModel.setGold(myPlayerBean.getGold());
-                                        dotaMatchModel.setGpm(myPlayerBean.getGold_per_min());
-                                        dotaMatchModel.setScaledDamage(myPlayerBean.getScaled_hero_damage());
-                                        Log.d(TAG, "mvp match model " + dotaMatchModel.toString());
-                                        return dotaMatchModel;
-                                    }
-                                });
+                    public void accept(DotaMatchModel dotaMatchModel) throws Exception {
+                        if (dotaMatchModel.getId().equals(String.valueOf(sLastLatestMatchID))) {
+                            sCachedTimeLine.addAll(sLastTimeLine);
+                        } else {
+                            sCachedTimeLine.add(dotaMatchModel);
+                        }
+    
+//                        Collections.sort(sCachedTimeLine, new Comparator<MatchModel>() {
+//                            @Override
+//                            public int compare(MatchModel matchModel, MatchModel compareTo) {
+//                                return Long.valueOf(matchModel.getId()).compareTo(Long.valueOf(compareTo.getId()));
+//                            }
+//                        });
+                    }
+                })
+                .subscribe(new Observer<DotaMatchModel>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+        
+                    }
+    
+                    @Override
+                    public void onNext(DotaMatchModel dotaMatchModel) {
+        
+                    }
+    
+                    @Override
+                    public void onError(Throwable e) {
+        
+                    }
+    
+                    @Override
+                    public void onComplete() {
+                        Log.e(TAG, "onComplete: at " + System.currentTimeMillis());
                     }
                 });
-
-//                .defer(new Callable<ObservableSource<DotaMatchHistoryResultBean>>() {// TODO: 2017/11/2 rxLifeCircle
-//            @Override
-//            public ObservableSource<DotaMatchHistoryResultBean> call() throws Exception {
-//                String steamId = EasySP.init(AFApplication.getAppContext()).getString(PrefKeys.STEAM_ID);
-//                if (TextUtils.isEmpty(steamId)) {
-//                    throw new ResponseException("找不到 Steam ID，请重新绑定");
-//                }
-//                if (latestQueryingMatchID[0] == -1L) {
-//                    return RetrofitHelper.getService(ISteamApiService.class).getMatchHistory(Config.STEAM_API_KEY, steamId);
-//                } else {
-//                    return RetrofitHelper.getService(ISteamApiService.class).getMatchHistory(Config.STEAM_API_KEY, steamId, latestQueryingMatchID[0]);
-//                }
-//            }
-//        })
-//                .repeat()
-//                .takeUntil(new Predicate<DotaMatchHistoryResultBean>() {
+                
+        
+//                .flatMap(new Function<MatchModel, ObservableSource<MatchModel>>() {
 //                    @Override
-//                    public boolean test(DotaMatchHistoryResultBean resultBean) throws Exception {
-//                        Log.d(TAG, "remaining " + resultBean.getResult().getResults_remaining());
-//                        List<MatchesBean> matchesBeans = resultBean.getResult().getMatches();
-//                        if (resultBean.getResult().getResults_remaining() <= 0) {
-//                            return true;
-//                        } else {
-//                            latestQueryingMatchID[0] = matchesBeans.get(matchesBeans.size() - 1).getMatch_id();
-//                            return false;
-//                        }
-//                    }
-//                })
-//                .concatMap(new Function<DotaMatchHistoryResultBean, ObservableSource<MatchesBean>>() {
-//                    @Override
-//                    public ObservableSource<MatchesBean> apply(DotaMatchHistoryResultBean resultBean) throws Exception {
-//                        Log.d(TAG, "apply: flat to " + resultBean.getResult().getMatches().size());
-//                        return Observable.fromIterable(resultBean.getResult().getMatches());
-//                    }
-//                })
-//                .distinct(new Function<MatchesBean, Object>() {
-//                    @Override
-//                    public Object apply(MatchesBean matchesBean) throws Exception {
-//                        return matchesBean.getMatch_id();
-//                    }
-//                })
-//                .filter(new Predicate<MatchesBean>() {
-//                    @Override
-//                    public boolean test(MatchesBean matchesBean) throws Exception {
-//                        String steamId32 = EasySP.init(AFApplication.getAppContext()).getString(PrefKeys.STEAM_ID_32);
-//                        Document document = Jsoup.connect(Config.URL_DOTA_MATCH_DETAIL_PREFIX + matchesBean.getMatch_id()).get();
-//                        Elements elements = document.select(String.format("tr[url=%s] div[data-tip=%s]", steamId32, "match_mvp_tip"));
-//                        if (elements != null && elements.size() == 1) {
-//                            return true;
-//                        }
-//                        return false;
-//                    }
-//                })
-//                .flatMap(new Function<MatchesBean, ObservableSource<MatchModel>>() {
-//                    @Override
-//                    public ObservableSource<MatchModel> apply(MatchesBean matchesBean) throws Exception {
-//                        final DotaMatchModel dotaMatchModel = new DotaMatchModel(MatchModel.TYPE_DOTA, matchesBean.getStart_time());
-//                        return RetrofitHelper.getService(ISteamApiService.class).getMatchDetail(Config.STEAM_API_KEY, matchesBean.getMatch_id())
+//                    public ObservableSource<MatchModel> apply(final MatchModel matchModel) throws Exception {
+//                        return getMatchDetail(matchModel.getId())
 //                                .map(new Function<DotaMatchDetailResultBean, MatchModel>() {
 //                                    @Override
 //                                    public MatchModel apply(DotaMatchDetailResultBean resultBean) throws Exception {
+//                                        DotaMatchModel dotaMatchModel = (DotaMatchModel) matchModel;
 //                                        dotaMatchModel.setDuration(resultBean.getResult().getDuration());
-//                                        int steam32 = Integer.parseInt(EasySP.init(AFApplication.getAppContext()).getString(PrefKeys.STEAM_ID_32));
+//                                        int steam32 = Integer.parseInt(SteamUtil.getSteamID32By64(dotaMatchModel.getSteamID64()));
 //                                        PlayersBean myPlayerBean = null;
 //                                        for (PlayersBean playersBean : resultBean.getResult().getPlayers()
 //                                                ) {
@@ -277,7 +281,6 @@ public class RecentDotaMatchHelper {
 //                                        if (myPlayerBean == null) {
 //                                            throw new ApiException("找不到比赛该玩家的数据");
 //                                        }
-//
 //                                        dotaMatchModel.setKills(myPlayerBean.getKills());
 //                                        dotaMatchModel.setDeaths(myPlayerBean.getDeaths());
 //                                        dotaMatchModel.setAssits(myPlayerBean.getAssists());
@@ -285,6 +288,7 @@ public class RecentDotaMatchHelper {
 //                                        dotaMatchModel.setGold(myPlayerBean.getGold());
 //                                        dotaMatchModel.setGpm(myPlayerBean.getGold_per_min());
 //                                        dotaMatchModel.setScaledDamage(myPlayerBean.getScaled_hero_damage());
+//                                        Log.d(TAG, "mvp match model " + dotaMatchModel.toString());
 //                                        return dotaMatchModel;
 //                                    }
 //                                });
@@ -310,4 +314,12 @@ public class RecentDotaMatchHelper {
         }
         return 0;
     }
+    
+  
+    
+    
+    public static List<MatchModel> getCachedTimeLine() {
+        return sCachedTimeLine;
+    }
+    
 }

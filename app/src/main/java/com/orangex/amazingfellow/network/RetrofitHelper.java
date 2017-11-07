@@ -72,7 +72,8 @@ public class RetrofitHelper {// TODO: 2017/10/28 静态成员 or 单例，类的
                 .build();
         return retrofit.create(serviceClass);
     }
-//    private class LogInterceptor implements Interceptor {
+    
+    //    private class LogInterceptor implements Interceptor {
 //        @Override
 //        public Response intercept(Chain chain) throws IOException {
 //            Request request = chain.request();

@@ -33,4 +33,24 @@ public class RecentDataAdapter extends BaseRecyclerViewAdapter<MatchModel,Recent
     public int getItemViewType(int position) {
         return mDataList.get(position).getType();
     }
+    
+    
+    @Override
+    public void setDatas(List<MatchModel> matchModels) {
+        super.setDatas(matchModels);
+        RecentDataHelper.onRecentDataChanged(mDataList);
+    }
+    
+    @Override
+    public void addDatas(List<MatchModel> matchModels) {
+        super.addDatas(matchModels);
+        RecentDataHelper.onRecentDataChanged(mDataList);
+    }
+    
+    @Override
+    public void addDatas(int index, List<MatchModel> matchModels) {
+        super.addDatas(index, matchModels);
+        RecentDataHelper.onRecentDataChanged(mDataList);
+    }
+    
 }

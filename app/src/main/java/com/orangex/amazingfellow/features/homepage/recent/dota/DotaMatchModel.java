@@ -96,24 +96,6 @@ public class DotaMatchModel extends MatchModel {
         this.epm = epm;
     }
     
-    @Override
-    public String toString() {
-        return "DotaMatchModel{" +
-                "hero=" + hero +
-                ", kills=" + kills +
-                ", deaths=" + deaths +
-                ", assits=" + assits +
-                ", gold=" + gold +
-                ", gpm=" + gpm +
-                ", epm=" + epm +
-                ", level=" + level +
-                ", fightRate='" + fightRate + '\'' +
-                ", damageRate='" + damageRate + '\'' +
-                ", equipmentList=" + equipmentList +
-                ", lastTime=" + lastTime +
-                '}';
-    }
-    
     public int getScaledDamage() {
         return scaledDamage;
     }
@@ -136,5 +118,26 @@ public class DotaMatchModel extends MatchModel {
 
     public void setSteamID64(String steamID64) {
         this.steamID64 = steamID64;
+    }
+    
+    @Override
+    public String toString() {
+        return "DotaMatchModel{" +
+                "steamID64='" + steamID64 + '\'' +
+                ", hero=" + hero +
+                ", kills=" + kills +
+                ", deaths=" + deaths +
+                ", assits=" + assits +
+                ", gold=" + gold +
+                ", gpm=" + gpm +
+                ", epm=" + epm +
+                ", scaledDamage=" + scaledDamage +
+                ", glorys=" + glorys +
+                ", level=" + level +
+                ", fightRate='" + fightRate + '\'' +
+                ", damageRate='" + damageRate + '\'' +
+                ", equipmentList=" + equipmentList +
+                ", lastTime=" + lastTime +
+                '}';
     }
 }

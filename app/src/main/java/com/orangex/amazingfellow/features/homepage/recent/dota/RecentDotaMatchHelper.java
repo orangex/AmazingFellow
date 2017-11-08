@@ -12,6 +12,7 @@ import com.orangex.amazingfellow.network.RetrofitHelper;
 import com.orangex.amazingfellow.network.steam.ISteamApiService;
 import com.orangex.amazingfellow.network.steam.dota.DotaMatchDetailResultBean;
 import com.orangex.amazingfellow.rx.ResponseException;
+import com.orangex.amazingfellow.utils.DotaUtil;
 import com.orangex.amazingfellow.utils.SteamUtil;
 import com.white.easysp.EasySP;
 
@@ -25,6 +26,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -141,16 +144,16 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                         public ObservableSource<Pair<String, DotaMatchModel>> apply(Document document) throws Exception {
                                             List<Pair<String, DotaMatchModel>> matchModels = new ArrayList<>();
                                             Elements elements = document.select("div[class=match_index_lately_mvp_ico]");
+                                            String playerName = document.select("div[class=match_common_player] > span[title]").get(0).text().trim();
                                             if (elements.size() > 0) {
                                                 Log.d(TAG, "找到 mvp 的比赛"+elements.size()+" 场");
                                             }
                                             for (Element element : elements
                                                     ) {
-                                                
-                                                
+                                                Element mvpTable = element.parent().parent();
                                                 String id;
                                                 try {
-                                                    id= element.parent().parent().parent().attr("url");
+                                                    id= mvpTable.parent().attr("url");
                                                 } catch (NullPointerException e) {
                                                     Log.w(TAG, "比赛 id 抓取错误", e);
                                                     continue;
@@ -165,7 +168,6 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                                 }
                                                 DotaMatchModel model = new DotaMatchModel(MatchModel.TYPE_DOTA);
                                                 model.setId(id);
-                                                
                                                 List<Integer> glorys;
                                                 String time = null;
                                                 try {
@@ -173,13 +175,40 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                                     for (Element glory :
                                                             element.parent().nextElementSibling().children()) {
                                                         glorys.add(getGloryIDByClassName(glory.className()));
+                                                        glorys.add(0);
                                                     }
                                                     model.setGlorys(glorys);
-                                                    time = element.parent().parent().nextElementSibling().nextElementSibling().getElementsByClass("match_table_start_time_color").get(0).text();
+                                                    
+                                                    time = mvpTable.nextElementSibling().nextElementSibling().getElementsByClass("match_table_start_time_color").get(0).text().trim();
+                                                    
+                                                    String locHeroName = mvpTable.previousElementSibling().select("div[class] > img[src]").get(0).attr("title").trim();
+                                                    model.setHero(DotaUtil.getHeroIdByLocname(locHeroName));
+    
+                                                    String last = mvpTable.nextElementSibling().nextElementSibling().getElementsByTag("span").get(0).text().trim();
+                                                    model.setLastTime(Integer.parseInt(last.replace("分钟", "")));
+    
+                                                    String efficiency = mvpTable.nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().select("div[class=match_index_lately_table_damage]").get(0).text().trim();
+                                                    model.setEfficiency(efficiency);
+    
+                                                    String kda = mvpTable.nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().text().trim();
+                                                    Matcher matcherkda = Pattern.compile("(\\d+)/(\\d+)/(\\d+)").matcher(kda);
+                                                    if (matcherkda.find()) {
+                                                        model.setKills(Integer.parseInt(matcherkda.group(1)));
+                                                        model.setDeaths(Integer.parseInt(matcherkda.group(2)));
+                                                        model.setAssits(Integer.parseInt(matcherkda.group(3)));
+                                                    }
+    
+                                                    String gpm = mvpTable.nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().select("div[class=match_index_lately_table_damage]").get(0).text().trim();
+                                                    model.setGpm(Integer.parseInt(gpm));
+    
+                                                    String dhb = mvpTable.nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling().nextElementSibling()
+                                                            .getElementsByClass("match_index_lately_table_damage").get(0).text().trim();
+                                                    model.setDhb(Integer.parseInt(dhb));
+                                                    model.setPlayerName(playerName);
+                                                    model.setTimeOffsetDesc(time);
                                                 } catch (NullPointerException | IndexOutOfBoundsException e) {
                                                     Log.w(TAG, "抓取比赛 table split 出错", e);
                                                 }
-                                                
                                                 model.setSteamID64(friendID64);
                                                 matchModels.add(new Pair<String, DotaMatchModel>(time, model));
                                             }
@@ -216,7 +245,6 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                     .subscribeOn(Schedulers.io());
                         }
                     });
-
             friendMVPMatchObservables.add(observableFriend);
         }
         Observable.mergeDelayError(friendMVPMatchObservables)
@@ -245,7 +273,7 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
     
                     @Override
                     public void onNext(DotaMatchModel dotaMatchModel) {
-        
+                        Log.i(TAG, "onNext: " + sCachedTimeLine.size() + "  " + dotaMatchModel.toString());
                     }
     
                     @Override
@@ -302,15 +330,15 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
 
     private static Integer getGloryIDByClassName(String className) {
         if (className.equals("glory_kill")) {
-            return 1;
-        } else if (className.equals("glory_nai")) {
-            return 2;
-        } else if (className.equals("glory_assists")) {
-            return 3;
-        } else if (className.equals("glory_destroy")) {
-            return 4;
+            return DotaMatchModel.GLORY_KILL;
+        }else if (className.equals("glory_destroy")) {
+            return DotaMatchModel.GLORY_DESTROY;
         } else if (className.equals("glory_gold")) {
-            return 5;
+            return DotaMatchModel.GLORY_GOLD;
+        } else if (className.equals("glory_nai")) {
+            return DotaMatchModel.GLORY_HEALTH;
+        } else if (className.equals("glory_assists")) {
+            return DotaMatchModel.GLORY_ASSIST;
         }
         return 0;
     }

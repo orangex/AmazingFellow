@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.orangex.amazingfellow.R;
 import com.orangex.amazingfellow.base.BaseFragment;
+import com.orangex.amazingfellow.utils.DotaUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.List;
@@ -90,6 +91,7 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
     @Override
     protected void initDatas(Bundle savedInstanceState) {
         Log.e(TAG, "initDatas: at" + System.currentTimeMillis());
+        DotaUtil.initNameMap();
         RecentDataHelper.getRecentMVPMoments(getGetRecentDataObserver());
     }
     

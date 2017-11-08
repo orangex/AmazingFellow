@@ -12,5 +12,6 @@
     <string name="error_steam_vanityurl_api_failed_unkown">匹配 Steam ID 失败，未知原因</string>
     <string name="content_progress_dialog">请稍后</string>
     <string name="error_server_default">服务器有猫病啦</string>
+    <string name="heroname_card_default">未知</string>
 
 </resources>

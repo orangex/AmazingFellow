@@ -9,11 +9,15 @@ import java.util.List;
  */
 
 public class DotaMatchModel extends MatchModel {
-    private static final int GLORY_KILL = 1;
-    private static final int GLORY_ASSIS = 2;
-    private static final int GLORY_ = 3;
 
+    public static final Integer GLORY_KILL = 1;
+    public static final Integer GLORY_DESTROY = 2;
+    public static final Integer GLORY_GOLD = 3;
+    public static final Integer GLORY_HEALTH = 4;
+    public static final Integer GLORY_ASSIST = 5;
+    
     private String steamID64;
+    private String playerName;
     private int hero;
     private int kills;
     private int deaths;
@@ -34,6 +38,10 @@ public class DotaMatchModel extends MatchModel {
      * in minute
      */
     private int lastTime;
+    private String efficiency;
+    private int dhb;
+    private String timeOffsetDesc;
+    
     
     public DotaMatchModel(int type) {
         super(type);
@@ -120,10 +128,50 @@ public class DotaMatchModel extends MatchModel {
         this.steamID64 = steamID64;
     }
     
+    public void setLastTime(int lastTime) {
+        this.lastTime = lastTime;
+    }
+    public int getLastTime() {
+        return lastTime;
+    }
+    public String getEfficiency() {
+        return efficiency;
+    }
+    
+    public void setEfficiency(String efficiency) {
+        this.efficiency = efficiency;
+    }
+    
+    public int getDhb() {
+        return dhb;
+    }
+    
+    public void setDhb(int dhb) {
+        this.dhb = dhb;
+    }
+    
+    
+    public String getPlayerName() {
+        return playerName;
+    }
+    
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+    
+    public String getTimeOffsetDesc() {
+        return timeOffsetDesc;
+    }
+    
+    public void setTimeOffsetDesc(String timeOffsetDesc) {
+        this.timeOffsetDesc = timeOffsetDesc;
+    }
+    
     @Override
     public String toString() {
         return "DotaMatchModel{" +
                 "steamID64='" + steamID64 + '\'' +
+                ", playerName='" + playerName + '\'' +
                 ", hero=" + hero +
                 ", kills=" + kills +
                 ", deaths=" + deaths +
@@ -138,6 +186,9 @@ public class DotaMatchModel extends MatchModel {
                 ", damageRate='" + damageRate + '\'' +
                 ", equipmentList=" + equipmentList +
                 ", lastTime=" + lastTime +
+                ", efficiency='" + efficiency + '\'' +
+                ", dhb=" + dhb +
+                ", timeOffsetDesc='" + timeOffsetDesc + '\'' +
                 '}';
     }
 }

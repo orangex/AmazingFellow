@@ -1,23 +1,339 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="130dp"
+    android:paddingBottom="2dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="2dp"
+    app:cardCornerRadius="5dp">
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
+    <ImageView
+        android:id="@+id/bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/item_dota_antimage" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/card_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp">
+
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="8dp"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_mvp"
+            android:layout_width="60dp"
+            android:layout_height="20dp"
+            android:background="@drawable/trending_shape_glory_mvp"
+            android:fontFamily="@font/allan_bold"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="MVP"
+            android:textColor="@android:color/background_light"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_glory_kill"
+            android:layout_width="26dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/trending_shape_glory_kill"
+            android:gravity="center"
+            android:text="杀"
+            android:textColor="@android:color/background_light"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_mvp" />
+
+        <TextView
+            android:id="@+id/tv_glory_destroy"
+            android:layout_width="26dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/trending_shape_glory_destroy"
+            android:gravity="center"
+            android:text="破"
+            android:textColor="@android:color/background_light"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_glory_kill" />
+
+        <TextView
+            android:id="@+id/tv_glory_gold"
+            android:layout_width="26dp"
+            android:layout_height="14dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/trending_shape_glory_gold"
+            android:gravity="center"
+            android:text="金"
+            android:textColor="@android:color/background_light"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_glory_destroy" />
+
+        <TextView
+            android:id="@+id/tv_glory_health"
+            android:layout_width="26dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/trending_shape_glory_health"
+            android:gravity="center"
+            android:text="奶"
+            android:textColor="@android:color/background_light"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_glory_gold" />
+
+
+        <TextView
+            android:id="@+id/tv_glory_assist"
+            android:layout_width="26dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/trending_shape_glory_assist"
+            android:gravity="center"
+            android:text="助"
+            android:textColor="@android:color/background_light"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_glory_health" />
+
+
+        <TextView
+            android:id="@+id/tv_hero_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="monospace"
+            android:text="拉比克"
+            android:textAlignment="center"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_hero_name"
+            app:layout_constraintStart_toEndOf="@+id/tv_hero_name"
+            tools:text="Lv21" />
+
+        <TextView
+            android:id="@+id/tv_last"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_hero_name"
+            app:layout_constraintStart_toEndOf="@+id/tv_level"
+            tools:text="54分钟" />
+
+        <ImageView
+            android:id="@+id/coating"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/dhbtitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/tv_dhb"
+            app:layout_constraintTop_toTopOf="@+id/tv_dhb"
+            app:srcCompat="@drawable/trending_gradient_shape_match_table" />
+
+        <TextView
+            android:id="@+id/tv_kda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/archivo_black"
+            android:textAlignment="center"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/tv_hero_name"
+            tools:text="6/2/13" />
+
+        <TextView
+            android:id="@+id/kdatitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/archivo_black"
+            android:text="K/D/A"
+            android:textAlignment="center"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tv_kda"
+            app:layout_constraintStart_toStartOf="@+id/tv_kda"
+            app:layout_constraintTop_toBottomOf="@+id/tv_kda"
+            app:layout_constraintVertical_bias="0.01999998"
+            tools:text="K/D/A" />
+
+        <TextView
+            android:id="@+id/tv_efficiency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:fontFamily="@font/archivo_black"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textSize="24sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_kda"
+            app:layout_constraintStart_toEndOf="@+id/tv_kda"
+            tools:text="1.8" />
+
+        <TextView
+            android:id="@+id/efficiencytitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/archivo_black"
+            android:text="反毒瘤指数"
+            android:textAlignment="center"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@id/kdatitle"
+            app:layout_constraintEnd_toEndOf="@+id/tv_efficiency"
+            app:layout_constraintStart_toStartOf="@+id/tv_efficiency"
+            app:layout_constraintTop_toBottomOf="@+id/tv_efficiency" />
+
+        <TextView
+            android:id="@+id/tv_gpm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/archivo_black"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textSize="24sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_efficiency"
+            app:layout_constraintStart_toEndOf="@+id/tv_efficiency"
+            tools:text="650" />
+
+        <TextView
+            android:id="@+id/gpmtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/archivo_black"
+            android:text="GPM"
+            android:textAlignment="center"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@id/efficiencytitle"
+            app:layout_constraintEnd_toEndOf="@+id/tv_gpm"
+            app:layout_constraintStart_toStartOf="@+id/tv_gpm"
+            app:layout_constraintTop_toBottomOf="@+id/tv_gpm" />
+
+        <TextView
+            android:id="@+id/tv_dhb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/archivo_black"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textSize="24sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_gpm"
+            app:layout_constraintStart_toEndOf="@+id/tv_gpm"
+            tools:text="43860" />
+
+        <TextView
+            android:id="@+id/dhbtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/archivo_black"
+            android:text="DHB"
+            android:textAlignment="center"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@id/gpmtitle"
+            app:layout_constraintEnd_toEndOf="@+id/tv_dhb"
+            app:layout_constraintStart_toStartOf="@+id/tv_dhb"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dhb" />
+
+        <TextView
+            android:id="@+id/tv_playername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/background_light"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/kdatitle"
+            app:layout_constraintVertical_bias="0.65999997"
+            tools:text="你跳你跳你在跳" />
+
+        <TextView
+            android:id="@+id/tv_timeoffsetdesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@android:color/background_light"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tv_playername"
+            app:layout_constraintStart_toEndOf="@+id/tv_playername"
+            tools:text="于6天前" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

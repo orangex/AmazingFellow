@@ -5,7 +5,8 @@ import android.util.Log;
 import android.view.ViewGroup;
 
 import com.orangex.amazingfellow.base.BaseViewHolder;
-import com.orangex.amazingfellow.features.homepage.recent.dota.RecentDotaDataViewHolder;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.RecentDotaDataViewHolder;
 
 /**
  * Created by orangex on 2017/11/3.

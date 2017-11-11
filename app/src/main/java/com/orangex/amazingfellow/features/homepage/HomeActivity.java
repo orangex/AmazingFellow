@@ -3,17 +3,20 @@ package com.orangex.amazingfellow.features.homepage;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.util.Log;
+import android.widget.EditText;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.orangex.amazingfellow.R;
 import com.orangex.amazingfellow.features.bind.BindManager;
-import com.orangex.amazingfellow.features.homepage.recent.RecentDataHelper;
 import com.orangex.amazingfellow.features.homepage.recent.RecentFragment;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.RecentDataHelper;
+import com.orangex.amazingfellow.utils.AccountUtil;
 import com.orangex.amazingfellow.view.ProgressDialogObserver;
 
 import java.util.List;
@@ -24,16 +27,19 @@ public class HomeActivity extends AppCompatActivity {// TODO: 2017/11/3 import d
     final ProgressDialogObserver<List<String>> bindSteamIdObserver = new ProgressDialogObserver<List<String>>(HomeActivity.this) {
         @Override
         public void onNext(List<String> strings) {
-            RecentDataHelper.getRecentMVPMoments(strings,mRecentFragment.getGetRecentDataObserver());
+            RecentDataHelper.getRecentMVPMoments(mRecentFragment.getRefreshRecentDataObserver(),RecentDataHelper.TYPE_REFRESH);
         }
     };
-
     
-    @Override
+    private MaterialDialog.Builder mBindSteamDialog;
+    
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        Log.i(TAG, "onCreate: timeline test " + Thread.currentThread());
         initViews();
+        RecentDataHelper.startPulling();
+      
     }
     
     private void initViews() {
@@ -42,30 +48,20 @@ public class HomeActivity extends AppCompatActivity {// TODO: 2017/11/3 import d
         setSupportActionBar(toolbar);
     
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-    
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new MaterialDialog.Builder(HomeActivity.this)
-                        .title(R.string.title_dialog_bind_steam)
-                        .content(R.string.tip_dialog_bind_steam)
-                        .input(R.string.input_hint_dialog_bind_steam, R.string.input_prefill_dialog_bind_steam, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(MaterialDialog dialog, CharSequence input) {
-                                BindManager.bindSteamId(input.toString(), bindSteamIdObserver);
-                            }
-                        }).show();
-            
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                            
-                            }
-                        }).show();
-            }
-        });
-        
+        mBindSteamDialog = new MaterialDialog.Builder(HomeActivity.this)
+                .title(R.string.title_dialog_bind_steam)
+                .customView(R.layout.dlg_content_bind_steam_guide, false)
+                .positiveText("绑定")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        String input = ((EditText) dialog.findViewById(R.id.edt_input_steam_url)).getText().toString().trim();
+                        BindManager.bindSteamId(input, bindSteamIdObserver);
+                    }
+                });
+        if (!AccountUtil.hasBindSteam()) {
+            mBindSteamDialog.show();
+        }
     }
     
     private void initFragments() {

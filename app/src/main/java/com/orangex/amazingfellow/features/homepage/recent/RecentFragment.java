@@ -9,14 +9,22 @@ import android.view.View;
 
 import com.orangex.amazingfellow.R;
 import com.orangex.amazingfellow.base.BaseFragment;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.RecentDataHelper;
+import com.orangex.amazingfellow.utils.AccountUtil;
 import com.orangex.amazingfellow.utils.DotaUtil;
+import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.List;
 
 import butterknife.BindView;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -29,10 +37,12 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
     @BindView(R.id.refreshLayout_recent)
     SmartRefreshLayout mSmartRefreshLayoutRecent;
     
+    @BindView(R.id.refreshHeader_recent)
+    MaterialHeader mHeader;
     private RecentDataAdapter mRecentDataAdapter;
     
     
-    private Observer<List<MatchModel>> mGetRecentDataObserver = new Observer<List<MatchModel>>() {
+    private Observer<List<MatchModel>> mRefreshRecentDataObserver = new Observer<List<MatchModel>>() {
         @Override
         public void onSubscribe(Disposable d) {
         
@@ -40,7 +50,9 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
     
         @Override
         public void onNext(List<MatchModel> matchModels) {
-            mRecentDataAdapter.addDatas(matchModels);
+            Log.i(TAG, "timeline  refresh with " + matchModels.size() + Thread.currentThread());
+            mRecentDataAdapter.setDatas(matchModels);
+            mSmartRefreshLayoutRecent.finishRefresh(500);
         }
         
     
@@ -51,10 +63,32 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
     
         @Override
         public void onComplete() {
-        
         }
     };
     
+    private Observer<List<MatchModel>> mLoadMoreRecentDataObserver = new Observer<List<MatchModel>>() {
+        @Override
+        public void onSubscribe(Disposable d) {
+        
+        }
+        
+        @Override
+        public void onNext(List<MatchModel> matchModels) {
+            Log.i(TAG, "timeline loadmore with " + matchModels.size());
+            mSmartRefreshLayoutRecent.finishLoadmore(200);
+            mRecentDataAdapter.setDatas(matchModels);
+        }
+        
+        
+        @Override
+        public void onError(Throwable e) {
+        
+        }
+        
+        @Override
+        public void onComplete() {
+        }
+    };
 //    public static RecentFragment newInstance(){
 //        return newInstance(null);
 //    }
@@ -82,17 +116,39 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
     
     @Override
     protected void initViews(View view, Bundle savedInstanceState) {
+        mSmartRefreshLayoutRecent.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                Log.i(TAG, "onRefresh: ");
+                mSmartRefreshLayoutRecent.autoRefresh();
+                RecentDataHelper.getRecentMVPMoments(mRefreshRecentDataObserver, RecentDataHelper.TYPE_REFRESH);
+            }
+        });
+        mSmartRefreshLayoutRecent.setOnLoadmoreListener(new OnLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+                Log.i(TAG, "onLoadmore: ");
+                mSmartRefreshLayoutRecent.autoLoadmore();
+                RecentDataHelper.getRecentMVPMoments(mLoadMoreRecentDataObserver, RecentDataHelper.TYPE_LOADMORE);
+            }
+        });
+//        mSmartRefreshLayoutRecent.setEnableAutoLoadmore(false);
+//        mSmartRefreshLayoutRecent.setEnableScrollContentWhenLoaded(false);
         mRecentDataAdapter = new RecentDataAdapter(mContext, null);
         // TODO: 2017/11/4  mRecentDataAdapter.registerAdapterDataObserver();
         mRcvRecent.setAdapter(mRecentDataAdapter);
         mRcvRecent.setLayoutManager(new LinearLayoutManager(mContext));
+        mRcvRecent.setItemAnimator(new FadeInLeftAnimator());
+        
     }
     
     @Override
     protected void initDatas(Bundle savedInstanceState) {
         Log.e(TAG, "initDatas: at" + System.currentTimeMillis());
         DotaUtil.initNameMap();
-        RecentDataHelper.getRecentMVPMoments(getGetRecentDataObserver());
+        if (AccountUtil.hasBindSteam()) {
+            mSmartRefreshLayoutRecent.autoRefresh();
+        }
     }
     
     @Override
@@ -100,7 +156,7 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
         return R.layout.fragment_home;
     }
     
-    public Observer<List<MatchModel>> getGetRecentDataObserver() {
-        return mGetRecentDataObserver;
+    public Observer<List<MatchModel>> getRefreshRecentDataObserver() {
+        return mRefreshRecentDataObserver;
     }
 }

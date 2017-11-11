@@ -13,5 +13,7 @@
     <string name="content_progress_dialog">请稍后</string>
     <string name="error_server_default">服务器有猫病啦</string>
     <string name="heroname_card_default">未知</string>
+    <string name="title_refreshheader">这特么是我队友??</string>
+    <string name="content_bind_steam_guide_dlg">请在网页中操作，若在客户端内，右键空处选择\"在网页中打开\"即可</string>
 
 </resources>

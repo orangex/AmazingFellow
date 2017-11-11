@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="140dp"
     android:paddingBottom="2dp"
     android:paddingLeft="4dp"
     android:paddingRight="4dp"
@@ -42,43 +42,43 @@
 
         <TextView
             android:id="@+id/tv_mvp"
-            android:layout_width="60dp"
+            android:layout_width="65dp"
             android:layout_height="20dp"
             android:background="@drawable/trending_shape_glory_mvp"
-            android:fontFamily="@font/allan_bold"
             android:gravity="center"
             android:includeFontPadding="false"
-            android:text="MVP"
             android:textColor="@android:color/background_light"
-            android:textSize="20sp"
+            android:textSize="11sp"
             android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="虽败犹荣" />
 
         <TextView
             android:id="@+id/tv_glory_kill"
-            android:layout_width="26dp"
-            android:layout_height="15dp"
+            android:layout_width="35dp"
+            android:layout_height="18dp"
             android:layout_marginTop="3dp"
             android:background="@drawable/trending_shape_glory_kill"
             android:gravity="center"
             android:text="杀"
             android:textColor="@android:color/background_light"
-            android:textSize="8sp"
+            android:textSize="9sp"
             android:textStyle="bold"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_mvp" />
 
         <TextView
             android:id="@+id/tv_glory_destroy"
-            android:layout_width="26dp"
-            android:layout_height="15dp"
+            android:layout_width="35dp"
+            android:layout_height="18dp"
             android:layout_marginTop="3dp"
             android:background="@drawable/trending_shape_glory_destroy"
             android:gravity="center"
             android:text="破"
             android:textColor="@android:color/background_light"
-            android:textSize="8sp"
+            android:textSize="9sp"
             android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintRight_toRightOf="parent"
@@ -86,14 +86,14 @@
 
         <TextView
             android:id="@+id/tv_glory_gold"
-            android:layout_width="26dp"
-            android:layout_height="14dp"
+            android:layout_width="35dp"
+            android:layout_height="18dp"
             android:layout_marginTop="3dp"
             android:background="@drawable/trending_shape_glory_gold"
             android:gravity="center"
             android:text="金"
             android:textColor="@android:color/background_light"
-            android:textSize="8sp"
+            android:textSize="9sp"
             android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintRight_toRightOf="parent"
@@ -101,14 +101,14 @@
 
         <TextView
             android:id="@+id/tv_glory_health"
-            android:layout_width="26dp"
-            android:layout_height="15dp"
+            android:layout_width="35dp"
+            android:layout_height="18dp"
             android:layout_marginTop="3dp"
             android:background="@drawable/trending_shape_glory_health"
             android:gravity="center"
             android:text="奶"
             android:textColor="@android:color/background_light"
-            android:textSize="8sp"
+            android:textSize="9sp"
             android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintRight_toRightOf="parent"
@@ -117,46 +117,42 @@
 
         <TextView
             android:id="@+id/tv_glory_assist"
-            android:layout_width="26dp"
-            android:layout_height="15dp"
+            android:layout_width="35dp"
+            android:layout_height="18dp"
             android:layout_marginTop="3dp"
             android:background="@drawable/trending_shape_glory_assist"
             android:gravity="center"
             android:text="助"
             android:textColor="@android:color/background_light"
-            android:textSize="8sp"
+            android:textSize="9sp"
             android:textStyle="bold"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_glory_health" />
 
 
+        <ImageView
+            android:id="@+id/coating1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_player_name"
+            app:layout_constraintEnd_toEndOf="@+id/tv_last"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_player_name"
+            app:srcCompat="@drawable/trending_gradient_shape_match_table" />
+
         <TextView
-            android:id="@+id/tv_hero_name"
+            android:id="@+id/tv_player_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="monospace"
-            android:text="拉比克"
+            tools:text="你跳你跳你再跳"
             android:textAlignment="center"
             android:textColor="@color/cardview_light_background"
-            android:textSize="22sp"
+            android:textSize="21sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="@id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
-
-
-        <TextView
-            android:id="@+id/tv_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textAlignment="center"
-            android:textColor="@android:color/background_light"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintBaseline_toBaselineOf="@id/tv_hero_name"
-            app:layout_constraintStart_toEndOf="@+id/tv_hero_name"
-            tools:text="Lv21" />
 
         <TextView
             android:id="@+id/tv_last"
@@ -167,12 +163,27 @@
             android:textColor="@android:color/background_light"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBaseline_toBaselineOf="@id/tv_hero_name"
-            app:layout_constraintStart_toEndOf="@+id/tv_level"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_player_name"
+            app:layout_constraintStart_toEndOf="@+id/tv_player_name"
             tools:text="54分钟" />
 
+        <TextView
+            android:id="@+id/tv_game_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="Very High" />
+
         <ImageView
-            android:id="@+id/coating"
+            android:id="@+id/coating2"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@+id/dhbtitle"
@@ -188,11 +199,12 @@
             android:layout_marginTop="6dp"
             android:fontFamily="@font/archivo_black"
             android:textAlignment="center"
-            android:textColor="@color/cardview_light_background"
+            android:textColor="@android:color/background_light"
             android:textSize="24sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/kdatitle"
             app:layout_constraintLeft_toLeftOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/tv_hero_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_player_name"
             tools:text="6/2/13" />
 
         <TextView
@@ -214,6 +226,7 @@
             app:layout_constraintStart_toStartOf="@+id/tv_kda"
             app:layout_constraintTop_toBottomOf="@+id/tv_kda"
             app:layout_constraintVertical_bias="0.01999998"
+            app:layout_constraintBottom_toTopOf="@+id/tv_hero_name"
             tools:text="K/D/A" />
 
         <TextView
@@ -306,20 +319,29 @@
             app:layout_constraintStart_toStartOf="@+id/tv_dhb"
             app:layout_constraintTop_toBottomOf="@+id/tv_dhb" />
 
+        <ImageView
+            android:id="@+id/coating3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_hero_name"
+            app:layout_constraintEnd_toEndOf="@+id/tv_timeoffsetdesc"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_hero_name"
+            app:srcCompat="@drawable/trending_gradient_shape_match_table" />
+
         <TextView
-            android:id="@+id/tv_playername"
+            android:id="@+id/tv_hero_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:textColor="@android:color/background_light"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/kdatitle"
-            app:layout_constraintVertical_bias="0.65999997"
-            tools:text="你跳你跳你在跳" />
+            tools:text="拉比克" />
 
         <TextView
             android:id="@+id/tv_timeoffsetdesc"
@@ -327,10 +349,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:textColor="@android:color/background_light"
-            android:textSize="11sp"
+            android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBaseline_toBaselineOf="@+id/tv_playername"
-            app:layout_constraintStart_toEndOf="@+id/tv_playername"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tv_hero_name"
+            app:layout_constraintStart_toEndOf="@+id/tv_hero_name"
             tools:text="于6天前" />
 
 

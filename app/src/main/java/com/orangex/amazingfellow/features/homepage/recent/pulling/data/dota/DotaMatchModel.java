@@ -1,6 +1,6 @@
-package com.orangex.amazingfellow.features.homepage.recent.dota;
+package com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota;
 
-import com.orangex.amazingfellow.features.homepage.recent.MatchModel;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
 
 import java.util.List;
 
@@ -16,6 +16,13 @@ public class DotaMatchModel extends MatchModel {
     public static final Integer GLORY_HEALTH = 4;
     public static final Integer GLORY_ASSIST = 5;
     
+    public static final int MVP_TYPE_MVP = 0x10;
+    public static final int MVP_TYPE_GLORIOUS = 0x11;
+    
+    public static final int GAME_LEVEL_NORMAL = 1;
+    public static final int GAME_LEVEL_HIGH = 2;
+    public static final int GAME_LEVEL_VERYHIGN = 3;
+    
     private String steamID64;
     private String playerName;
     private int hero;
@@ -27,10 +34,16 @@ public class DotaMatchModel extends MatchModel {
     private int epm;
     private int scaledDamage;
     private List<Integer> glorys;
+    
+
+    
+    private int mvpType;
+    
+    
     /**
      * 1 = Normal ,2 = High ,3 =Very High
      */
-    private int level;
+    private int gameLevel;
     private String fightRate;
     private String damageRate;
     private List<Integer> equipmentList;
@@ -41,7 +54,7 @@ public class DotaMatchModel extends MatchModel {
     private String efficiency;
     private int dhb;
     private String timeOffsetDesc;
-    
+    private int pageInDotaMore;
     
     public DotaMatchModel(int type) {
         super(type);
@@ -181,7 +194,7 @@ public class DotaMatchModel extends MatchModel {
                 ", epm=" + epm +
                 ", scaledDamage=" + scaledDamage +
                 ", glorys=" + glorys +
-                ", level=" + level +
+                ", gameLevel=" + gameLevel +
                 ", fightRate='" + fightRate + '\'' +
                 ", damageRate='" + damageRate + '\'' +
                 ", equipmentList=" + equipmentList +
@@ -191,4 +204,28 @@ public class DotaMatchModel extends MatchModel {
                 ", timeOffsetDesc='" + timeOffsetDesc + '\'' +
                 '}';
     }
+    
+    public int getPageInDotaMore() {
+        return pageInDotaMore;
+    }
+    
+    public void setPageInDotaMore(int pageInDotaMore) {
+        this.pageInDotaMore = pageInDotaMore;
+    }
+    
+    public int getMvpType() {
+        return mvpType;
+    }
+    
+    public void setMvpType(int mvpType) {
+        this.mvpType = mvpType;
+    }
+    
+    public void setGameLevel(int gameLevel) {
+        this.gameLevel = gameLevel;
+    }
+    public int getGameLevel() {
+        return gameLevel;
+    }
+    
 }

@@ -1,4 +1,4 @@
-package com.orangex.amazingfellow.features.homepage.recent.ow;
+package com.orangex.amazingfellow.features.homepage.recent.pulling.data.ow;
 
 /**
  * Created by orangex on 2017/11/7.

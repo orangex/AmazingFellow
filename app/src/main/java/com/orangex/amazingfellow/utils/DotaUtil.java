@@ -18,7 +18,7 @@ import java.util.HashMap;
  * Created by orangex on 2017/11/8.
  */
 
-public class DotaUtil {
+public class DotaUtil {// TODO: 2017/11/11 更新 json
     private static ArrayList<DotaHeroName> sDotaHeroNames = new ArrayList<>();// TODO: 2017/11/8 sparseArray
     private static HashMap<String, Integer> sIDMap = new HashMap<>();
    
@@ -49,7 +49,7 @@ public class DotaUtil {
     }
     
     public static Object getHeroPicById(int hero) {
-        if (hero <= 1) {
+        if (hero < 1) {
             return R.drawable.drag_frame;
         }
         String name = sDotaHeroNames.get(hero - 1).getName();
@@ -61,7 +61,7 @@ public class DotaUtil {
     }
     
     public static String getHeroLocNameById(int hero) {
-        if (hero <= 1) {
+        if (hero < 1) {
             return AFApplication.getAppContext().getString(R.string.heroname_card_default);
         }
         String name = sDotaHeroNames.get(hero - 1).getLocName();

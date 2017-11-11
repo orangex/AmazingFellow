@@ -72,17 +72,17 @@ public abstract class BaseRecyclerViewAdapter<M, VH extends BaseViewHolder<M>> e
         mDataList.clear();
         mDataList.addAll(mList);
         notifyDataSetChanged();
-        Log.e(TAG, "setDatas: at" + System.currentTimeMillis());
+        
     }
     
     public void addDatas(int index, List<M> mList) {
         mDataList.addAll(index, mList);
         notifyItemRangeInserted(index, mList.size());
-        Log.e(TAG, "setDatas: at" + System.currentTimeMillis());
+        Log.i(TAG, "addDatas: at" + System.currentTimeMillis());
     }
     
     public void addDatas(List<M> mList) {
-        addDatas(0, mList);
+        addDatas(mList.size(), mList);
     }
     
 }

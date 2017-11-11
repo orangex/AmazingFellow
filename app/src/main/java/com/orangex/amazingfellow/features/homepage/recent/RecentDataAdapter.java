@@ -2,10 +2,12 @@ package com.orangex.amazingfellow.features.homepage.recent;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import com.orangex.amazingfellow.base.BaseRecyclerViewAdapter;
-import com.orangex.amazingfellow.features.homepage.recent.dota.RecentDotaDataViewHolder;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.RecentDotaDataViewHolder;
 
 import java.util.List;
 
@@ -14,6 +16,8 @@ import java.util.List;
  */
 
 public class RecentDataAdapter extends BaseRecyclerViewAdapter<MatchModel,RecentDataViewHolder> {
+    
+    private static final String TAG = RecentDataAdapter.class.getSimpleName();
     
     public RecentDataAdapter(Context context, @Nullable List<MatchModel> list) {
         super(context, list);
@@ -37,20 +41,19 @@ public class RecentDataAdapter extends BaseRecyclerViewAdapter<MatchModel,Recent
     
     @Override
     public void setDatas(List<MatchModel> matchModels) {
+        Log.i(TAG, "set timeline size " + matchModels.size());
         super.setDatas(matchModels);
-        RecentDataHelper.onRecentDataChanged(mDataList);
+        
     }
     
     @Override
     public void addDatas(List<MatchModel> matchModels) {
         super.addDatas(matchModels);
-        RecentDataHelper.onRecentDataChanged(mDataList);
     }
     
     @Override
     public void addDatas(int index, List<MatchModel> matchModels) {
         super.addDatas(index, matchModels);
-        RecentDataHelper.onRecentDataChanged(mDataList);
     }
     
 }

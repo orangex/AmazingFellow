@@ -7,7 +7,7 @@ import android.util.Log;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.RecentDataHelper;
 
 public class PullingJobService extends JobService {
-    private static final String TAG = PullingJobService.class.getSimpleName();
+    private static final String TAG ="datui "+ PullingJobService.class.getSimpleName();
     public PullingJobService() {
     }
     

@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 public abstract class BaseRecyclerViewAdapter<M, VH extends BaseViewHolder<M>> extends RecyclerView.Adapter<VH> {
-    private static final String TAG = BaseRecyclerViewAdapter.class.getSimpleName();
+    private static final String TAG ="datui "+ BaseRecyclerViewAdapter.class.getSimpleName();
     protected List<M> mDataList;
     protected Context mContext;
     protected onItemClickListener mOnItemClickListener;

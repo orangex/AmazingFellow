@@ -19,7 +19,7 @@ import retrofit2.converter.fastjson.FastJsonConverterFactory;
  */
 
 public class RetrofitHelper {// TODO: 2017/10/28 静态成员 or 单例，类的构造到底应不应该依赖 context
-    private static final int DEFAULT_TIMEOUT = 3;
+    private static final int DEFAULT_TIMEOUT = 5;
     private static HashMap<String, Object> sServicemap = new HashMap<>();// TODO: 2017/10/28 hashmap 优化？
     
     public static  <S> S getService(Class<S> serviceClass) {

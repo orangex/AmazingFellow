@@ -15,8 +15,6 @@ import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchMode
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.DotaMatchModel;
 import com.orangex.amazingfellow.utils.DotaUtil;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -24,7 +22,7 @@ import java.util.List;
  */
 
 public class NotificationsManager {
-    private static final String TAG = NotificationsManager.class.getSimpleName();
+    private static final String TAG ="datui "+ NotificationsManager.class.getSimpleName();
     private static final int ID_DOTA = 1;
     private static final int ID_OW = 2;
     
@@ -35,13 +33,6 @@ public class NotificationsManager {
         Log.i(TAG, "updateNotification: ");
         NotificationManager mNotificationManager = (NotificationManager) AFApplication.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
     
-        Collections.sort(delta, new Comparator<MatchModel>() {
-            @Override
-            public int compare(MatchModel matchModel, MatchModel t1) {
-                return Long.valueOf(t1.getId()).compareTo(Long.valueOf(matchModel.getId()));
-            }
-        });
-        
         
         for (int i = 0; i < delta.size(); i ++) {
             if (delta.get(i) instanceof DotaMatchModel) {

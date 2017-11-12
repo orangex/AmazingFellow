@@ -17,7 +17,7 @@ import java.util.List;
 
 public class RecentDataAdapter extends BaseRecyclerViewAdapter<MatchModel,RecentDataViewHolder> {
     
-    private static final String TAG = RecentDataAdapter.class.getSimpleName();
+    private static final String TAG ="datui "+ RecentDataAdapter.class.getSimpleName();
     
     public RecentDataAdapter(Context context, @Nullable List<MatchModel> list) {
         super(context, list);
@@ -56,4 +56,46 @@ public class RecentDataAdapter extends BaseRecyclerViewAdapter<MatchModel,Recent
         super.addDatas(index, matchModels);
     }
     
+    public void fillMissingDatas(List<MatchModel> matchModels) {
+        
+        Log.i(TAG, "fillMissingDatas: origin size " + mDataList.size() + " now come size " + matchModels.size());
+    
+        super.setDatas(matchModels);
+//        for (int i =0; i <matchModels.size();i++) {
+//            MatchModel model = matchModels.get(i);
+//            if (!mDataList.contains(model)) {
+//                boolean hasInsert = false;
+//                for (int j = 0; i < mDataList.size(); j++) {
+//                    if (Long.parseLong(model.getId()) > Long.parseLong(mDataList.get(j).getId())) {
+//                        mDataList.add(j, model);
+//                        notifyItemInserted(j);
+//                        hasInsert = true;
+//                        break;
+//                    }
+//                }
+//                if (!hasInsert) {
+//                    mDataList.add(model);
+//                    notifyItemInserted(mDataList.size());
+//                }
+//            }
+//        }
+        
+//        List<MatchModel> temp = mDataList;
+//        mDataList.clear();
+//        mDataList.addAll(matchModels);
+//        int lastPos = -1;
+//        for (int i = 0; i < temp.size(); i++) {
+//            int pos = mDataList.indexOf(temp.get(i));
+//            notifyItemRangeInserted(i, pos - lastPos - 1);
+//            lastPos = pos;
+//        }
+//        notifyItemRangeInserted(temp.size(), mDataList.size() - lastPos);
+
+
+//        for (int i=0; i<mDataList.size();i++) {
+//            if (!temp.contains(mDataList.get(i))) {
+//                notifyItemInserted(i);
+//            }
+//        }
+    }
 }

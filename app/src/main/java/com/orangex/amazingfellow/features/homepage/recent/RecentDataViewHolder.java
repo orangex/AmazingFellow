@@ -13,7 +13,7 @@ import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.Rece
  */
 
 public class RecentDataViewHolder extends BaseViewHolder<MatchModel>{
-    private static final String TAG = RecentDotaDataViewHolder.class.getSimpleName();
+    private static final String TAG ="datui "+ RecentDotaDataViewHolder.class.getSimpleName();
     
     public RecentDataViewHolder(Context context, ViewGroup root, int layoutRes) {
         super(context, root, layoutRes);

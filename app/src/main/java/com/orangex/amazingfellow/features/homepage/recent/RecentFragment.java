@@ -30,7 +30,7 @@ import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
  * A placeholder fragment containing a simple view.
  */
 public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load of Fragment
-    public static final String TAG = RecentFragment.class.getSimpleName();
+    public static final String TAG ="datui "+ RecentFragment.class.getSimpleName();
     @BindView(R.id.rcv_recent)
     RecyclerView mRcvRecent;
     
@@ -50,8 +50,7 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
     
         @Override
         public void onNext(List<MatchModel> matchModels) {
-            Log.i(TAG, "timeline  refresh with " + matchModels.size() + Thread.currentThread());
-            mRecentDataAdapter.setDatas(matchModels);
+            mRecentDataAdapter.addDatas(0, matchModels);
             mSmartRefreshLayoutRecent.finishRefresh(500);
         }
         
@@ -76,7 +75,7 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
         public void onNext(List<MatchModel> matchModels) {
             Log.i(TAG, "timeline loadmore with " + matchModels.size());
             mSmartRefreshLayoutRecent.finishLoadmore(200);
-            mRecentDataAdapter.setDatas(matchModels);
+            mRecentDataAdapter.addDatas(matchModels);
         }
         
         
@@ -89,7 +88,29 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
         public void onComplete() {
         }
     };
-//    public static RecentFragment newInstance(){
+    private Observer<List<MatchModel>> mFillMissingDataObserver=new Observer<List<MatchModel>>() {
+        @Override
+        public void onSubscribe(Disposable d) {
+        
+        }
+    
+        @Override
+        public void onNext(List<MatchModel> matchModels) {
+            
+            mRecentDataAdapter.fillMissingDatas(matchModels);
+        }
+    
+        @Override
+        public void onError(Throwable e) {
+        
+        }
+    
+        @Override
+        public void onComplete() {
+        
+        }
+    };
+    //    public static RecentFragment newInstance(){
 //        return newInstance(null);
 //    }
 //    public static RecentFragment newInstance(Bundle bundle){
@@ -121,7 +142,7 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
             public void onRefresh(RefreshLayout refreshlayout) {
                 Log.i(TAG, "onRefresh: ");
                 mSmartRefreshLayoutRecent.autoRefresh();
-                RecentDataHelper.getRecentMVPMoments(mRefreshRecentDataObserver, RecentDataHelper.TYPE_REFRESH);
+                RecentDataHelper.getRecentMVPMoments(mFillMissingDataObserver,mRefreshRecentDataObserver, RecentDataHelper.TYPE_REFRESH);
             }
         });
         mSmartRefreshLayoutRecent.setOnLoadmoreListener(new OnLoadmoreListener() {
@@ -129,7 +150,7 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
             public void onLoadmore(RefreshLayout refreshlayout) {
                 Log.i(TAG, "onLoadmore: ");
                 mSmartRefreshLayoutRecent.autoLoadmore();
-                RecentDataHelper.getRecentMVPMoments(mLoadMoreRecentDataObserver, RecentDataHelper.TYPE_LOADMORE);
+                RecentDataHelper.getRecentMVPMoments(mFillMissingDataObserver,mLoadMoreRecentDataObserver, RecentDataHelper.TYPE_LOADMORE);
             }
         });
 //        mSmartRefreshLayoutRecent.setEnableAutoLoadmore(false);
@@ -158,5 +179,9 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
     
     public Observer<List<MatchModel>> getRefreshRecentDataObserver() {
         return mRefreshRecentDataObserver;
+    }
+    
+    public void autoSmartRefresh() {
+        mSmartRefreshLayoutRecent.autoRefresh();
     }
 }

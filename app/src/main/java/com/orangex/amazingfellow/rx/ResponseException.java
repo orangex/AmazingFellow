@@ -47,7 +47,8 @@ public class ResponseException extends Exception {
     private String displayMessage;
     
     ResponseException(String message, Throwable throwable) {
-        new ResponseException(message, throwable, message);
+        super(message, throwable);
+        this.displayMessage = message;
     }
     ResponseException(String message, Throwable throwable,String displayMessage) {
         super(message, throwable);

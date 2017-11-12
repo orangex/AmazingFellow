@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -22,12 +23,13 @@ import com.orangex.amazingfellow.view.ProgressDialogObserver;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {// TODO: 2017/11/3 import dagger2
-    private static final String TAG = HomeActivity.class.getSimpleName();
+    private static final String TAG ="datui "+ HomeActivity.class.getSimpleName();
     private RecentFragment mRecentFragment;
     final ProgressDialogObserver<List<String>> bindSteamIdObserver = new ProgressDialogObserver<List<String>>(HomeActivity.this) {
         @Override
         public void onNext(List<String> strings) {
-            RecentDataHelper.getRecentMVPMoments(mRecentFragment.getRefreshRecentDataObserver(),RecentDataHelper.TYPE_REFRESH);
+            Log.i(TAG, "bind complete at "+ DateUtils.formatDateTime(HomeActivity.this,System.currentTimeMillis(),DateUtils.FORMAT_ABBREV_ALL));
+            mRecentFragment.autoSmartRefresh();
         }
     };
     
@@ -36,10 +38,8 @@ public class HomeActivity extends AppCompatActivity {// TODO: 2017/11/3 import d
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Log.i(TAG, "onCreate: timeline test " + Thread.currentThread());
         initViews();
         RecentDataHelper.startPulling();
-      
     }
     
     private void initViews() {

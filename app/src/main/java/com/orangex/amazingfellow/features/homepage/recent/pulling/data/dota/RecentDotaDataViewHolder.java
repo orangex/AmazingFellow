@@ -1,7 +1,6 @@
 package com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -10,8 +9,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.orangex.amazingfellow.R;
 import com.orangex.amazingfellow.base.AFApplication;
-import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
 import com.orangex.amazingfellow.features.homepage.recent.RecentDataViewHolder;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
 import com.orangex.amazingfellow.utils.DotaUtil;
 import com.orangex.amazingfellow.utils.TypefaceUtil;
 
@@ -55,7 +54,7 @@ public class RecentDotaDataViewHolder extends RecentDataViewHolder {
     TextView mTvTimeoffsetdesc;
     @BindView(R.id.tv_game_level)
     TextView mTVGamelevel;
-    private static final String TAG = RecentDotaDataViewHolder.class.getSimpleName();
+    private static final String TAG ="datui "+ RecentDotaDataViewHolder.class.getSimpleName();
     
     public RecentDotaDataViewHolder(Context context, ViewGroup parent) {
         super(context,parent, R.layout.item_recent_dota);
@@ -118,6 +117,6 @@ public class RecentDotaDataViewHolder extends RecentDataViewHolder {
             mTVGamelevel.setText("Very High");
         }
         
-        Log.i(TAG, "setData: " + dotaDataModel.toString());
+        //Log.i(TAG, "setData: " + dotaDataModel.toString());
     }
 }

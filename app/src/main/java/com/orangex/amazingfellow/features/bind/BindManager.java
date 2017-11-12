@@ -37,7 +37,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class BindManager {
-    public static final String TAG = BindManager.class.getSimpleName();
+    public static final String TAG ="datui "+ BindManager.class.getSimpleName();
     public static void showBindDialog(View fromClick, Activity activity) {
 
     }

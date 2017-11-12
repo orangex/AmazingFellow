@@ -11,6 +11,8 @@ import com.orangex.amazingfellow.base.AFApplication;
 import com.orangex.amazingfellow.features.homepage.recent.notification.NotificationsManager;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.PullingJobService;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.RecentDotaMatchHelper;
+import com.orangex.amazingfellow.rx.ResponseException;
+import com.orangex.amazingfellow.utils.AccountUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +25,9 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 /**
@@ -31,27 +35,39 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因为并不是所有的网络请求都需要频繁地重试，比如说一个重要的表单提交，它应该尽可能多失败重连，相反地，埋点上报等统计功能，它可能最多只需要重试一次就足够了。因此针对不同的场景，我们需要不同的重试次数。退避策略。
-    public static final String TAG = RecentDataHelper.class.getSimpleName();
+    public static final String TAG ="datui "+ RecentDataHelper.class.getSimpleName();
 
     public static final int TYPE_REFRESH = 0;
     public static final int TYPE_LOADMORE = 1;
+    private static final int RETRY_COUNT = 5;
     
-    private static List<List<MatchModel>> sCachedBrokenTimeline = new ArrayList<>();
+    private static List<MatchModel> sCachedTimeline = new ArrayList<>();
     private static boolean isRefreshing = false;
     private static boolean isLoadingMore = false;
     
     private static DisposableObserver<MatchModel> sMatchModelObserver ;
-    private static List<MatchModel> sBufferedDelta = new ArrayList<>();
+    private static List<MatchModel> sBufferedIncrement = new ArrayList<>();
     
-    public static void getRecentMVPMoments(Observer<List<MatchModel>> observer, final int type) {
+    public static void getRecentMVPMoments(Observer<List<MatchModel>> fillMissingDataObserver, Observer<List<MatchModel>> observer, final int type) {
+        
+        Observable.just(sCachedTimeline)
+                .filter(new Predicate<List<MatchModel>>() {
+                    @Override
+                    public boolean test(List<MatchModel> matchModels) throws Exception {
+                        return sCachedTimeline.size() != 0;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(fillMissingDataObserver);
+        
         doPullingJob(type);
         
-        Observable.timer(4, TimeUnit.SECONDS)
+        Observable.timer(3, TimeUnit.SECONDS)
                 .flatMap(new Function<Long, ObservableSource<List<MatchModel>>>() {
                     @Override
                     public ObservableSource<List<MatchModel>> apply(Long aLong) throws Exception {
-                        Log.i(TAG, "got timeline with size " + sCachedBrokenTimeline.get(0).size());
-                        return Observable.just(sCachedBrokenTimeline.get(0));
+                        Log.i(TAG, "got timeline with size " + sBufferedIncrement.size());
+                        return Observable.just(sBufferedIncrement);
                     }
                 })
                 .map(new Function<List<MatchModel>, List<MatchModel>>() {
@@ -72,8 +88,11 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
     }
     
     public static void doPullingJob(final int type) {
-        sBufferedDelta.clear();
-        Log.d(TAG, "getRecentMVPMoments: start with type " + type);
+        if (!AccountUtil.hasBindSteam()) {
+            Log.i(TAG, "doPullingJob: has not bind steam return");
+            return;
+        }
+        Log.i(TAG, "getRecentMVPMoments: start with type " + type);
         if (type == TYPE_REFRESH) {
             if (isRefreshing) {
                 Log.i(TAG, "doPullingJob: already freshing");
@@ -84,7 +103,6 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
                 sMatchModelObserver.dispose();
             }
             isRefreshing = true;
-            sCachedBrokenTimeline.add(0, new ArrayList<MatchModel>());
         }
         if (type == TYPE_LOADMORE) {
             if (isLoadingMore) {
@@ -97,38 +115,68 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
             }
             isLoadingMore = true;
         }
-    
+        sBufferedIncrement.clear();
         sMatchModelObserver = new DisposableObserver<MatchModel>() {
             @Override
             public void onNext(MatchModel matchModel) {
-                if (!sBufferedDelta.contains(matchModel)) {
-                    sBufferedDelta.add(matchModel);
+                if (!sBufferedIncrement.contains(matchModel)) {
+                    sBufferedIncrement.add(matchModel);
                 }
                 Log.d(TAG, "onNext: " + matchModel.toString());
             }
         
             @Override
-            public void onError(Throwable e) {
-                Toast.makeText(AFApplication.getAppContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onError(Throwable e) {//已经重试过依然 error，则视为成功
+                Log.w(TAG, "onError: 重试过依然 error");
+                Toast.makeText(AFApplication.getAppContext(), ((ResponseException)e).getDisplayMessage(), Toast.LENGTH_SHORT).show();
                 updateState(type);
-                sCachedBrokenTimeline.remove(0);
             }
         
             @Override
             public void onComplete() {
-                if (isReachedLastTimeline()) {
-                    Log.i(TAG, "reached last timeline");
-                    sCachedBrokenTimeline.get(0).addAll(sCachedBrokenTimeline.get(1));
-                    sCachedBrokenTimeline.remove(1);
-                }
                 Log.e(TAG, "onComplete: at " + System.currentTimeMillis());
                 updateState(type);
             }
         };
         RecentDotaMatchHelper.getDotaMoments(type)
+                .take(30, TimeUnit.SECONDS)
+                .doOnComplete(new Action() {// TODO: 2017/11/12  放到各个 data helper 里去处理
+                    @Override
+                    public void run() throws Exception {
+                        if (!RecentDotaMatchHelper.isReachedLastTimeline()) {
+                            throw new ResponseException("has not reached the last timeline", "数据可能会有些缺失orz,后续会自动重试");
+                        }
+                    }
+                })
+                .onErrorReturn(new Function<Throwable, MatchModel>() {
+                    @Override
+                    public MatchModel apply(Throwable throwable) throws Exception {
+                        Log.w(TAG, throwable.getMessage() + throwable);
+                        sBufferedIncrement.clear();
+                        throw ResponseException.generateResponseException((Exception) throwable);
+                    }
+                })
+                .retryWhen(new Function<Observable<Throwable>, ObservableSource<?>>() {//重试机制
+                    @Override
+                    public ObservableSource<?> apply(Observable<Throwable> throwableObservable) throws Exception {
+                        return throwableObservable.zipWith(Observable.range(1, RETRY_COUNT), new BiFunction<Throwable, Integer, Integer>() {
+                            @Override
+                            public Integer apply(Throwable throwable, Integer integer) throws Exception {
+                                return integer;
+                            }
+                        })
+                                .flatMap(new Function<Integer, ObservableSource<?>>() {
+                                    @Override
+                                    public ObservableSource<?> apply(Integer integer) throws Exception {
+                                        return Observable.timer(integer * 5, TimeUnit.SECONDS);
+                                    }
+                                });
+                    }
+                })
                 .doOnDispose(new Action() {
                     @Override
                     public void run() throws Exception {
+                        Log.i(TAG, "disapose ");
                         updateState(type);
                     }
                 })
@@ -144,13 +192,27 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
      * 根据 timeline 和 type 维护自己的状态，并告知各个游戏的 data helper
      */
     private static void updateState(int type) {
-        NotificationsManager.updateNotification(sBufferedDelta);
+        Log.i(TAG, "updateState: " + type + " " + sBufferedIncrement.size() + " " + sCachedTimeline.size());
+        Collections.sort(sBufferedIncrement, new Comparator<MatchModel>() {
+            @Override
+            public int compare(MatchModel matchModel, MatchModel t1) {
+                return Long.valueOf(t1.getId()).compareTo(Long.valueOf(matchModel.getId()));
+            }
+        });
+        if (type == TYPE_REFRESH) {
+            sCachedTimeline.addAll(0, sBufferedIncrement);
+            NotificationsManager.updateNotification(sBufferedIncrement);
+        } else if (type == TYPE_LOADMORE) {
+            sCachedTimeline.addAll(sBufferedIncrement);
+        }
+        
+        sBufferedIncrement.clear();
         if (type == TYPE_REFRESH) {
             isRefreshing = false;
         } else if (type == TYPE_LOADMORE) {
             isLoadingMore = false;
         }
-        RecentDotaMatchHelper.updateState(type,sCachedBrokenTimeline);
+        RecentDotaMatchHelper.updateState(type,sCachedTimeline);
     }
     
     private static ObservableSource<MatchModel> getCSGOMoments() {
@@ -165,13 +227,9 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
         return Observable.just(new MatchModel(MatchModel.TYPE_OW, System.currentTimeMillis()));
     }
     
-    public static List<List<MatchModel>> getCachedBrokenTimeline() {
-        return sCachedBrokenTimeline;
-    }
     
     public static void startPulling() {
         JobScheduler scheduler = (JobScheduler) AFApplication.getAppContext().getSystemService( Context.JOB_SCHEDULER_SERVICE );
-    
         JobInfo.Builder builder = new JobInfo.Builder( 1, new ComponentName( AFApplication.getAppContext().getPackageName(),PullingJobService.class.getName()));
         builder.setPeriodic(1000 * 60 * 30);
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED);

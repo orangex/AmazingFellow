@@ -18,7 +18,7 @@ import io.reactivex.disposables.Disposable;
  */
 
 public abstract class ProgressDialogObserver<T> extends ResponseObserver<T> {
-    private static final String TAG = ProgressDialogObserver.class.getSimpleName();
+    private static final String TAG ="datui "+ ProgressDialogObserver.class.getSimpleName();
     MaterialDialog dialog;
     protected Context context;
 

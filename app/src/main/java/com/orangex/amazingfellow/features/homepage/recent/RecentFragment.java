@@ -159,6 +159,11 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
         // TODO: 2017/11/4  mRecentDataAdapter.registerAdapterDataObserver();
         mRcvRecent.setAdapter(mRecentDataAdapter);
         mRcvRecent.setLayoutManager(new LinearLayoutManager(mContext));
+        RecyclerView.ItemAnimator itemAnimator = new FadeInLeftAnimator();
+        itemAnimator.setAddDuration(500);
+        itemAnimator.setMoveDuration(400);
+        itemAnimator.setRemoveDuration(300);
+        itemAnimator.setChangeDuration(300);
         mRcvRecent.setItemAnimator(new FadeInLeftAnimator());
         
     }
@@ -170,6 +175,7 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
         if (AccountUtil.hasBindSteam()) {
             mSmartRefreshLayoutRecent.autoRefresh();
         }
+
     }
     
     @Override

@@ -8,8 +8,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.orangex.amazingfellow.base.AFApplication;
+import com.orangex.amazingfellow.db.DBHelper;
 import com.orangex.amazingfellow.features.homepage.recent.notification.NotificationsManager;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.PullingJobService;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.DotaMatchModel;
+import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.DotaMatchModelDao;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.RecentDotaMatchHelper;
 import com.orangex.amazingfellow.rx.ResponseException;
 import com.orangex.amazingfellow.utils.AccountUtil;
@@ -21,11 +24,15 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
@@ -34,7 +41,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by chengyuan.wang on 2017/10/31.
  */
 
-public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因为并不是所有的网络请求都需要频繁地重试，比如说一个重要的表单提交，它应该尽可能多失败重连，相反地，埋点上报等统计功能，它可能最多只需要重试一次就足够了。因此针对不同的场景，我们需要不同的重试次数。退避策略。
+public class RecentDataHelper {
     public static final String TAG ="datui "+ RecentDataHelper.class.getSimpleName();
 
     public static final int TYPE_REFRESH = 0;
@@ -61,7 +68,6 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
                 .subscribe(fillMissingDataObserver);
         
         doPullingJob(type);
-        
         Observable.timer(3, TimeUnit.SECONDS)
                 .flatMap(new Function<Long, ObservableSource<List<MatchModel>>>() {
                     @Override
@@ -76,7 +82,7 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
                         Collections.sort(matchModels, new Comparator<MatchModel>() {
                             @Override
                             public int compare(MatchModel matchModel, MatchModel compareTo) {
-                                return Long.valueOf(compareTo.getId()).compareTo(Long.valueOf(matchModel.getId()));
+                                return compareTo.getEndAt().compareTo(matchModel.getEndAt());
                             }
                         });
                         return matchModels;
@@ -195,8 +201,8 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
         Log.i(TAG, "updateState: " + type + " " + sBufferedIncrement.size() + " " + sCachedTimeline.size());
         Collections.sort(sBufferedIncrement, new Comparator<MatchModel>() {
             @Override
-            public int compare(MatchModel matchModel, MatchModel t1) {
-                return Long.valueOf(t1.getId()).compareTo(Long.valueOf(matchModel.getId()));
+            public int compare(MatchModel matchModel, MatchModel compareTo) {
+                return compareTo.getEndAt().compareTo(matchModel.getEndAt());
             }
         });
         if (type == TYPE_REFRESH) {
@@ -205,8 +211,11 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
         } else if (type == TYPE_LOADMORE) {
             sCachedTimeline.addAll(sBufferedIncrement);
         }
-        
+        List<MatchModel> templistForSave = new ArrayList<>();
+        templistForSave.addAll(sBufferedIncrement);
         sBufferedIncrement.clear();
+        saveToDB(templistForSave);
+        
         if (type == TYPE_REFRESH) {
             isRefreshing = false;
         } else if (type == TYPE_LOADMORE) {
@@ -215,17 +224,39 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
         RecentDotaMatchHelper.updateState(type,sCachedTimeline);
     }
     
-    private static ObservableSource<MatchModel> getCSGOMoments() {
-        return Observable.just(new MatchModel(MatchModel.TYPE_CSGO, System.currentTimeMillis()));
+    private static void saveToDB(List<MatchModel> bufferedIncrement) {
+       
+        List<DotaMatchModel> dotaMatchModels = new ArrayList<>();
+        for (MatchModel model : bufferedIncrement
+                ) {
+            if (model instanceof DotaMatchModel) {
+                dotaMatchModels.add((DotaMatchModel) model);
+            }
+        }
+        Log.i(TAG, "saveToDB: buffered size=" + bufferedIncrement.size() + " and save size " + dotaMatchModels.size());
+        
+        Observable.just(dotaMatchModels)
+                .doOnNext(new Consumer<List<DotaMatchModel>>() {
+                    @Override
+                    public void accept(List<DotaMatchModel> dotaMatchModels) throws Exception {
+                        DBHelper.getDaoSession().getDotaMatchModelDao().insertOrReplaceInTx(dotaMatchModels);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
-
-    private static ObservableSource<MatchModel> getPUBGMoments() {
-        return Observable.just(new MatchModel(MatchModel.TYPE_PUBG, System.currentTimeMillis()));
-    }
-
-    private static ObservableSource<MatchModel> getOWMoments() {
-        return Observable.just(new MatchModel(MatchModel.TYPE_OW, System.currentTimeMillis()));
-    }
+    
+//    private static ObservableSource<MatchModel> getCSGOMoments() {
+//        return Observable.just(new MatchModel(MatchModel.TYPE_CSGO, System.currentTimeMillis()));
+//    }
+//
+//    private static ObservableSource<MatchModel> getPUBGMoments() {
+//        return Observable.just(new MatchModel(MatchModel.TYPE_PUBG, System.currentTimeMillis()));
+//    }
+//
+//    private static ObservableSource<MatchModel> getOWMoments() {
+//        return Observable.just(new MatchModel(MatchModel.TYPE_OW, System.currentTimeMillis()));
+//    }
     
     
     public static void startPulling() {
@@ -236,5 +267,46 @@ public class RecentDataHelper {// TODO: 2017/11/1 可配置次数的重试。因
         builder.setPersisted(false);
         int result = scheduler.schedule(builder.build());
         Log.i(TAG, "job scheduled " + result);
+    }
+    
+    public static void loadfromDB() {
+        isRefreshing = true;
+        Observable.create(new ObservableOnSubscribe<List<DotaMatchModel>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<DotaMatchModel>> e) throws Exception {
+                DotaMatchModelDao dotaMatchModelDao = DBHelper.getDaoSession().getDotaMatchModelDao();
+                e.onNext(dotaMatchModelDao.queryBuilder()
+                        .orderDesc(DotaMatchModelDao.Properties.EndAt)
+                        .list());
+                e.onComplete();
+            
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<List<DotaMatchModel>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+        
+                    }
+    
+                    @Override
+                    public void onNext(List<DotaMatchModel> dotaMatchModels) {
+                        sCachedTimeline.clear();
+                        sCachedTimeline.addAll(dotaMatchModels);
+                    }
+    
+                    @Override
+                    public void onError(Throwable e) {
+        
+                    }
+    
+                    @Override
+                    public void onComplete() {
+                        isRefreshing = false;
+                    }
+                });
+       
+                
+        
     }
 }

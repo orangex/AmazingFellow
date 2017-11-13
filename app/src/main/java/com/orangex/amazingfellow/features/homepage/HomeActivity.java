@@ -40,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {// TODO: 2017/11/3 import d
         setContentView(R.layout.activity_home);
         initViews();
         RecentDataHelper.startPulling();
+        RecentDataHelper.loadfromDB();
     }
     
     private void initViews() {

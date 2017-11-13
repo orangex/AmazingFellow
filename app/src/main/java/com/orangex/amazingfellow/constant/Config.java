@@ -13,6 +13,7 @@ public class Config {
     
     public static final int MAX_MATCH_COUNT_LOAD_ONCE = 10;
     public static final int MAX_PAGE_COUNT_TO_SPIDE = 5;
-    public static final long MAX_TIME_LOAD_ONCE = 3;
-
+    public static final long MAX_DAYS_LIMIT_LOAD_ONCE = 30;
+    
+    public static final String DB_NAME = "AF_DB";
 }

@@ -48,17 +48,25 @@ public class DotaUtil {// TODO: 2017/11/11 更新 json
         }
     }
     
-    public static Object getHeroPicById(int hero) {
-        if (hero < 1) {
-            return R.drawable.drag_frame;
-        }
-        String name = sDotaHeroNames.get(hero - 1).getName();
-        if (name == null) {
-            return R.drawable.drag_frame;
-        } else {
+    //    public static Object getHeroPicById(int hero) {
+    //        if (hero < 1) {
+    //            return R.drawable.drag_frame;
+    //        }
+    //        String name = sDotaHeroNames.get(hero - 1).getName();
+    //        if (name == null) {
+    //            return R.drawable.drag_frame;
+    //        } else {
+    //            return  String.format("http://cdn.max-c.com/app/dota2/%s@3x.png", name);
+    //        }
+    //    }
+        public static String getHeroPicById(int hero) {
+            
+            String name = sDotaHeroNames.get(hero - 1).getName();
+            if (name==null)
+                name = "";
             return  String.format("http://cdn.max-c.com/app/dota2/%s@3x.png", name);
+            
         }
-    }
     
     public static String getHeroLocNameById(int hero) {
         if (hero < 1) {

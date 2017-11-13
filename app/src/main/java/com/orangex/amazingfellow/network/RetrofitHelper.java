@@ -1,5 +1,6 @@
 package com.orangex.amazingfellow.network;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.orangex.amazingfellow.base.AFApplication;
 
 import java.io.File;
@@ -32,12 +33,13 @@ public class RetrofitHelper {// TODO: 2017/10/28 静态成员 or 单例，类的
         }
     }
     
-    private static <S> S createService(Class<S> serviceClass) {
+    private static <S> S createService(Class<S> serviceClass) {// TODO: 2017/11/13  重试
         //custom OkHttp
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
-                .addInterceptor(interceptor);
+                .addInterceptor(interceptor)
+                .addNetworkInterceptor(new StethoInterceptor());
         //time our
         httpClient.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         httpClient.writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);

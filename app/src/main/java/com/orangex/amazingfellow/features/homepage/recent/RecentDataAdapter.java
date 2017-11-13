@@ -35,7 +35,8 @@ public class RecentDataAdapter extends BaseRecyclerViewAdapter<MatchModel,Recent
     
     @Override
     public int getItemViewType(int position) {
-        return mDataList.get(position).getType();
+        return 1;
+        //if (mDataList.get(position).getClass()
     }
     
     
@@ -53,6 +54,7 @@ public class RecentDataAdapter extends BaseRecyclerViewAdapter<MatchModel,Recent
     
     @Override
     public void addDatas(int index, List<MatchModel> matchModels) {
+        Log.i(TAG, "addDatas: "+matchModels.toString());
         super.addDatas(index, matchModels);
     }
     

@@ -6,13 +6,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.orangex.amazingfellow.R;
 import com.orangex.amazingfellow.base.AFApplication;
 import com.orangex.amazingfellow.features.homepage.recent.RecentDataViewHolder;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
 import com.orangex.amazingfellow.utils.DotaUtil;
 import com.orangex.amazingfellow.utils.TypefaceUtil;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 
@@ -63,40 +63,41 @@ public class RecentDotaDataViewHolder extends RecentDataViewHolder {
     @Override
     public void setData(MatchModel matchModel) {
         DotaMatchModel dotaDataModel = (DotaMatchModel) matchModel;
-        Glide.with(itemView.getContext())
+        Picasso.with(itemView.getContext())
                 .load(DotaUtil.getHeroPicById(dotaDataModel.getHero()))
                 .into(mBackgound);
         mTvHeroName.setText(DotaUtil.getHeroLocNameById(dotaDataModel.getHero()));
         mTvLast.setText(dotaDataModel.getLastTime() + "分钟");
+        
         if (dotaDataModel.getMvpType() == DotaMatchModel.MVP_TYPE_GLORIOUS) {
             mTvMVP.setText("虽败犹荣");
             mTvMVP.setVisibility(View.VISIBLE);
         } else {
             mTvMVP.setVisibility(View.GONE);
         }
-        if (dotaDataModel.getGlorys().contains(DotaMatchModel.GLORY_KILL)) {
+        if (dotaDataModel.isGloryKill()) {
             mTvKill.setVisibility(View.VISIBLE);
         } else {
             mTvKill.setVisibility(View.GONE);
         }
     
-        if (dotaDataModel.getGlorys().contains(DotaMatchModel.GLORY_DESTROY)) {
+        if (dotaDataModel.isGloryDestroy()) {
             mTvDestroy.setVisibility(View.VISIBLE);
         } else {
             mTvDestroy.setVisibility(View.GONE);
         }
     
-        if (dotaDataModel.getGlorys().contains(DotaMatchModel.GLORY_GOLD)) {
+        if (dotaDataModel.isGloryGold()) {
             mTvGold.setVisibility(View.VISIBLE);
         } else {
             mTvGold.setVisibility(View.GONE);
         }
-        if (dotaDataModel.getGlorys().contains(DotaMatchModel.GLORY_HEALTH)) {
+        if (dotaDataModel.isGloryHealth()) {
             mTvHealth.setVisibility(View.VISIBLE);
         } else {
             mTvHealth.setVisibility(View.GONE);
         }
-        if (dotaDataModel.getGlorys().contains(DotaMatchModel.GLORY_ASSIST)) {
+        if (dotaDataModel.isGloryAssist()) {
             mTvAssist.setVisibility(View.VISIBLE);
         } else {
             mTvAssist.setVisibility(View.GONE);

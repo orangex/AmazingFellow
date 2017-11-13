@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.stetho.Stetho;
+
 /**
  * Created by orangex on 2017/10/28.
  */
@@ -16,6 +18,7 @@ public class AFApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = getApplicationContext();
+        Stetho.initializeWithDefaults(this);
     }
     
     public static Context getAppContext() {

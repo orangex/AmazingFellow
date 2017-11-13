@@ -3,7 +3,6 @@ package com.orangex.amazingfellow.base;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -78,7 +77,6 @@ public abstract class BaseRecyclerViewAdapter<M, VH extends BaseViewHolder<M>> e
     public void addDatas(int index, List<M> mList) {
         mDataList.addAll(index, mList);
         notifyItemRangeInserted(index, mList.size());
-        Log.i(TAG, "addDatas: at" + System.currentTimeMillis());
     }
     
     public void addDatas(List<M> mList) {

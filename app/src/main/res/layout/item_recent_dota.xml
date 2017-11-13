@@ -66,6 +66,7 @@
             android:textColor="@android:color/background_light"
             android:textSize="9sp"
             android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_mvp" />
 
@@ -126,6 +127,7 @@
             android:textColor="@android:color/background_light"
             android:textSize="9sp"
             android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_glory_health" />
 

@@ -13,6 +13,7 @@ import com.orangex.amazingfellow.base.AFApplication;
 import com.orangex.amazingfellow.features.homepage.HomeActivity;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.DotaMatchModel;
+import com.orangex.amazingfellow.utils.APPUtil;
 import com.orangex.amazingfellow.utils.DotaUtil;
 
 import java.util.List;
@@ -27,12 +28,11 @@ public class NotificationsManager {
     private static final int ID_OW = 2;
     
     public static void updateNotification(List<MatchModel> delta) {
-//        if (APPUtil.isAppForeground()) {
-//            return;
-//        }
+        if (APPUtil.isAppForeground()) {
+            return;
+        }
         Log.i(TAG, "updateNotification: ");
         NotificationManager mNotificationManager = (NotificationManager) AFApplication.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
-    
         
         for (int i = 0; i < delta.size(); i ++) {
             if (delta.get(i) instanceof DotaMatchModel) {

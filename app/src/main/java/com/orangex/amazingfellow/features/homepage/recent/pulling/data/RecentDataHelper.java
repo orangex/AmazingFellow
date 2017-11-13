@@ -98,6 +98,8 @@ public class RecentDataHelper {
             Log.i(TAG, "doPullingJob: has not bind steam return");
             return;
         }
+
+        
         Log.i(TAG, "getRecentMVPMoments: start with type " + type);
         if (type == TYPE_REFRESH) {
             if (isRefreshing) {
@@ -121,6 +123,7 @@ public class RecentDataHelper {
             }
             isLoadingMore = true;
         }
+        
         sBufferedIncrement.clear();
         sMatchModelObserver = new DisposableObserver<MatchModel>() {
             @Override
@@ -199,23 +202,24 @@ public class RecentDataHelper {
      */
     private static void updateState(int type) {
         Log.i(TAG, "updateState: " + type + " " + sBufferedIncrement.size() + " " + sCachedTimeline.size());
-        Collections.sort(sBufferedIncrement, new Comparator<MatchModel>() {
-            @Override
-            public int compare(MatchModel matchModel, MatchModel compareTo) {
-                return compareTo.getEndAt().compareTo(matchModel.getEndAt());
+        if (sBufferedIncrement.size() > 0) {
+            Collections.sort(sBufferedIncrement, new Comparator<MatchModel>() {
+                @Override
+                public int compare(MatchModel matchModel, MatchModel compareTo) {
+                    return compareTo.getEndAt().compareTo(matchModel.getEndAt());
+                }
+            });
+            if (type == TYPE_REFRESH) {
+                sCachedTimeline.addAll(0, sBufferedIncrement);
+                NotificationsManager.updateNotification(sBufferedIncrement);
+            } else if (type == TYPE_LOADMORE) {
+                sCachedTimeline.addAll(sBufferedIncrement);
             }
-        });
-        if (type == TYPE_REFRESH) {
-            sCachedTimeline.addAll(0, sBufferedIncrement);
-            NotificationsManager.updateNotification(sBufferedIncrement);
-        } else if (type == TYPE_LOADMORE) {
-            sCachedTimeline.addAll(sBufferedIncrement);
+            List<MatchModel> templistForSave = new ArrayList<>();
+            templistForSave.addAll(sBufferedIncrement);
+            sBufferedIncrement.clear();
+            saveToDB(templistForSave);
         }
-        List<MatchModel> templistForSave = new ArrayList<>();
-        templistForSave.addAll(sBufferedIncrement);
-        sBufferedIncrement.clear();
-        saveToDB(templistForSave);
-        
         if (type == TYPE_REFRESH) {
             isRefreshing = false;
         } else if (type == TYPE_LOADMORE) {
@@ -271,6 +275,7 @@ public class RecentDataHelper {
     
     public static void loadfromDB() {
         isRefreshing = true;
+        Log.i(TAG, "loadfromDB: start");
         Observable.create(new ObservableOnSubscribe<List<DotaMatchModel>>() {
             @Override
             public void subscribe(ObservableEmitter<List<DotaMatchModel>> e) throws Exception {
@@ -293,6 +298,7 @@ public class RecentDataHelper {
                     public void onNext(List<DotaMatchModel> dotaMatchModels) {
                         sCachedTimeline.clear();
                         sCachedTimeline.addAll(dotaMatchModels);
+                        
                     }
     
                     @Override
@@ -302,7 +308,9 @@ public class RecentDataHelper {
     
                     @Override
                     public void onComplete() {
-                        isRefreshing = false;
+                        Log.i(TAG, "loadfromDB: end");
+                        updateState(TYPE_REFRESH);
+                        
                     }
                 });
        

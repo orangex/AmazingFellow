@@ -15,5 +15,10 @@
     <string name="heroname_card_default">未知</string>
     <string name="title_refreshheader">这特么是我队友??</string>
     <string name="content_bind_steam_guide_dlg">请在网页中操作，若在客户端内，右键空处选择\"在网页中打开\"即可</string>
+    <string name="title_app_name">大腿时刻</string>
+    <string name="action_share">分享</string>
+    <string name="action_more">更多</string>
+    <string name="action_about">关于</string>
+    <string name="application_name">大腿时刻</string>
 
 </resources>

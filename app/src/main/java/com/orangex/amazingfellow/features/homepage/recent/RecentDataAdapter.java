@@ -2,12 +2,14 @@ package com.orangex.amazingfellow.features.homepage.recent;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ViewGroup;
 
 import com.orangex.amazingfellow.base.BaseRecyclerViewAdapter;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.RecentDotaDataViewHolder;
+import com.yqritc.recyclerviewflexibledivider.VerticalDividerItemDecoration;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ import java.util.List;
  * Created by orangex on 2017/11/3.
  */
 
-public class RecentDataAdapter extends BaseRecyclerViewAdapter<MatchModel,RecentDataViewHolder> {
+public class RecentDataAdapter extends BaseRecyclerViewAdapter<MatchModel,RecentDataViewHolder> implements VerticalDividerItemDecoration.MarginProvider{
     
     private static final String TAG ="datui "+ RecentDataAdapter.class.getSimpleName();
     
@@ -99,5 +101,15 @@ public class RecentDataAdapter extends BaseRecyclerViewAdapter<MatchModel,Recent
 //                notifyItemInserted(i);
 //            }
 //        }
+    }
+    
+    @Override
+    public int dividerTopMargin(int position, RecyclerView parent) {
+        return 4;
+    }
+    
+    @Override
+    public int dividerBottomMargin(int position, RecyclerView parent) {
+        return 4;
     }
 }

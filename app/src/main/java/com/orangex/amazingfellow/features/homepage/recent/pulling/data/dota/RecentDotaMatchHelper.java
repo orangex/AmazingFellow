@@ -258,7 +258,7 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                                 endAt = timemillsNow - tempCount *dayUnit;
                                             }
                                             if (tempCount <= 30) {
-                                                Log.i(TAG, "getEndAtTimemills: " + timeOffsetDesc + " " + tempCount + " page=" + page + " count=" + count);
+                                                Log.d(TAG, "getEndAtTimemills: " + timeOffsetDesc + " " + tempCount + " page=" + page + " count=" + count);
                                             }
                                             return endAt - (page + 1) * count;
                                         }

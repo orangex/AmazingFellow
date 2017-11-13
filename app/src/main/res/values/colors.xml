@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="tv_gamelevel_high">#949494</color>
-    <color name="tv_gamelevel_veryhigh">#a27d41</color>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#c3c3c3</color>
+    <color name="colorAccent">#205a88</color>
+    <color name="tv_gamelevel_high">#d6cba6</color>
+    <color name="tv_gamelevel_veryhigh">#b77a19</color>
 </resources>

@@ -1,5 +1,6 @@
 package com.orangex.amazingfellow.features.homepage.recent;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +26,7 @@ import butterknife.BindView;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.FlipInLeftYAnimator;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -157,14 +159,18 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
 //        mSmartRefreshLayoutRecent.setEnableScrollContentWhenLoaded(false);
         mRecentDataAdapter = new RecentDataAdapter(mContext, null);
         // TODO: 2017/11/4  mRecentDataAdapter.registerAdapterDataObserver();
-        mRcvRecent.setAdapter(mRecentDataAdapter);
-        mRcvRecent.setLayoutManager(new LinearLayoutManager(mContext));
         RecyclerView.ItemAnimator itemAnimator = new FadeInLeftAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setMoveDuration(400);
         itemAnimator.setRemoveDuration(300);
         itemAnimator.setChangeDuration(300);
-        mRcvRecent.setItemAnimator(new FadeInLeftAnimator());
+        mRcvRecent.setItemAnimator(new FlipInLeftYAnimator());
+    
+        mRcvRecent.addItemDecoration(new SpaceItemDecorator(10));
+        
+        mRcvRecent.setAdapter(mRecentDataAdapter);
+        mRcvRecent.setLayoutManager(new LinearLayoutManager(mContext));
+
         
     }
     
@@ -189,5 +195,22 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
     
     public void autoSmartRefresh() {
         mSmartRefreshLayoutRecent.autoRefresh();
+    }
+    
+    private class SpaceItemDecorator extends RecyclerView.ItemDecoration {
+        int space;
+        public SpaceItemDecorator(int space) {
+            this.space = space;
+        }
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view);
+            if (position == 0) {
+                outRect.top = 2*space;
+            }
+            outRect.bottom = 2 * space;
+            outRect.left = space;
+            outRect.right = space;
+        }
     }
 }

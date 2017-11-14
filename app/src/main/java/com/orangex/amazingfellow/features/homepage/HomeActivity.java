@@ -85,7 +85,8 @@ public class HomeActivity extends AppCompatActivity {// TODO: 2017/11/3 import d
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
-//            case R.id.action_more:
+            case R.id.action_about:
+                showAboutDialog();
 //                // User chose the "Favorite" action, mark the current item
 //                // as a favorite...
 //                return true;
@@ -94,6 +95,21 @@ public class HomeActivity extends AppCompatActivity {// TODO: 2017/11/3 import d
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+    }
+    
+    private void showAboutDialog() {
+        new MaterialDialog.Builder(HomeActivity.this)
+                .title(R.string.title_dialog_about)
+                .content(R.string.content_dialog_about,true)
+                .positiveText("知道了")
+                .cancelable(true)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
     
 }

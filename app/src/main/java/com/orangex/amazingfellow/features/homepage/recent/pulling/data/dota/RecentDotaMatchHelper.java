@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.orangex.amazingfellow.base.AFApplication;
+import com.orangex.amazingfellow.constant.Commons;
 import com.orangex.amazingfellow.constant.Config;
 import com.orangex.amazingfellow.constant.PrefKeys;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
@@ -118,7 +119,7 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                                 Log.d(TAG, "预检查，时间抓取为空 ");
                                                 return true;
                                             } else {
-                                                if (timeOffset.contains("天前") && Integer.parseInt(timeOffset.substring(0, timeOffset.indexOf("天前"))) >= Config.MAX_DAYS_LIMIT_LOAD_ONCE) {
+                                                if (timeOffset.contains("天前") && Integer.parseInt(timeOffset.substring(0, timeOffset.indexOf("天前"))) >= Commons.MAX_DAYS_LIMIT_LOAD_ONCE) {
                                                     Log.d(TAG, " 超出最远时间的数据 ");
                                                     return false;
                                                 }
@@ -285,7 +286,7 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                                     Log.d(TAG, "时间抓取为空 ");
                                                     return true;
                                                 } else {
-                                                    if (timeOffset.contains("天前") && Integer.parseInt(timeOffset.substring(0, timeOffset.indexOf("天前"))) >= Config.MAX_DAYS_LIMIT_LOAD_ONCE) {
+                                                    if (timeOffset.contains("天前") && Integer.parseInt(timeOffset.substring(0, timeOffset.indexOf("天前"))) >= Commons.MAX_DAYS_LIMIT_LOAD_ONCE) {
                                                         Log.d(TAG, " 超出最远时间的数据 ");
                                                         return false;
                                                     }

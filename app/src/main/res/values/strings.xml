@@ -20,5 +20,17 @@
     <string name="action_more">更多</string>
     <string name="action_about">关于</string>
     <string name="application_name">大腿时刻</string>
-
-</resources>
+    <string name="title_dialog_about">关于</string>
+    <string name="content_dialog_about"><Data><![CDATA[ <html>
+            <body>
+                <h3>关于APP</h3>
+                <p>如你所见，就是这么清爽(简陋)。如果希望收到"xxx 刚刚拿 MVP"的通知的话，请前往诸如后台白名单的设置，因厂商而已。
+因为数据是客户端抓取网页而来，很有可能哪天数据就异常了，不要惊慌。如果<b>设置-应用-AmazingFellow-清理数据</b>没用的话，等着新版本发布吧囧。
+                </br>
+                源码请戳<a href=https://github.com/orangex/AmazingFellow>这里</a>，一起交流学习</p>
+                <hr />
+                <h3>我</h3>
+                <p>有什么好点子、建议、想说的请<a href=mailto:rampaging9@gmail.com>邮件</a>，我希望。。能有精力跟进它,毕竟现在处于无业状态囧。</p>
+            </body>
+        </html> ]]> </Data></string>
+   </resources>

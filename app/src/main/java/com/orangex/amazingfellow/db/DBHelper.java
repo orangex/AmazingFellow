@@ -1,7 +1,7 @@
 package com.orangex.amazingfellow.db;
 
 import com.orangex.amazingfellow.base.AFApplication;
-import com.orangex.amazingfellow.constant.Config;
+import com.orangex.amazingfellow.constant.Commons;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.DaoMaster;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.DaoSession;
 
@@ -16,7 +16,7 @@ public class DBHelper {
   
     private static DaoMaster getDaoMaster() {
         if (daoMaster == null) {
-            DaoMaster.OpenHelper helper = new DaoMaster.DevOpenHelper(AFApplication.getAppContext(), Config.DB_NAME, null);
+            DaoMaster.OpenHelper helper = new DaoMaster.DevOpenHelper(AFApplication.getAppContext(), Commons.DB_NAME, null);
             daoMaster = new DaoMaster(helper.getWritableDatabase());
         }
         return daoMaster;

@@ -7,8 +7,8 @@ android {
         applicationId "com.orangex.amazingfellow"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "0.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -54,4 +54,5 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     implementation 'jp.wasabeef:recyclerview-animators:2.2.7'
+    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
 }

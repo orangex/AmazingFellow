@@ -200,7 +200,7 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                                     
                                                     timeOffsetDesc = mvpTable.nextElementSibling().nextElementSibling().getElementsByClass("match_table_start_time_color").get(0).text().trim();
                                                     
-                                                    String locHeroName = mvpTable.previousElementSibling().select("div[class] > img[src]").get(0).attr("title").trim();
+                                                    String locHeroName = mvpTable.previousElementSibling().select("div[class]  img[src]").get(0).attr("title").trim();
                                                     model.setHero(DotaUtil.getHeroIdByLocname(locHeroName));
     
                                                     String last = mvpTable.nextElementSibling().nextElementSibling().getElementsByTag("span").get(0).text().trim();

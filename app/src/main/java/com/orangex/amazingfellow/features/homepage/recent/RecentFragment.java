@@ -3,6 +3,7 @@ package com.orangex.amazingfellow.features.homepage.recent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,7 +26,6 @@ import java.util.List;
 import butterknife.BindView;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.FlipInLeftYAnimator;
 
 /**
@@ -42,6 +42,9 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
     @BindView(R.id.refreshHeader_recent)
     MaterialHeader mHeader;
     private RecentDataAdapter mRecentDataAdapter;
+    
+    @BindView(R.id.fab_upward)
+    FloatingActionButton mUpwardFab;
     
     
     private Observer<List<MatchModel>> mRefreshRecentDataObserver = new Observer<List<MatchModel>>() {
@@ -112,16 +115,6 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
         
         }
     };
-    //    public static RecentFragment newInstance(){
-//        return newInstance(null);
-//    }
-//    public static RecentFragment newInstance(Bundle bundle){
-//        RecentFragment recentFragment = new RecentFragment();
-//        if (bundle != null) {
-//            recentFragment.setArguments(bundle);
-//        }
-//        return recentFragment;
-//    }
 
     public RecentFragment() {
     }
@@ -159,18 +152,30 @@ public class RecentFragment extends BaseFragment {// TODO: 2017/11/3 Lazy load o
 //        mSmartRefreshLayoutRecent.setEnableScrollContentWhenLoaded(false);
         mRecentDataAdapter = new RecentDataAdapter(mContext, null);
         // TODO: 2017/11/4  mRecentDataAdapter.registerAdapterDataObserver();
-        RecyclerView.ItemAnimator itemAnimator = new FadeInLeftAnimator();
-        itemAnimator.setAddDuration(500);
-        itemAnimator.setMoveDuration(400);
-        itemAnimator.setRemoveDuration(300);
-        itemAnimator.setChangeDuration(300);
         mRcvRecent.setItemAnimator(new FlipInLeftYAnimator());
     
         mRcvRecent.addItemDecoration(new SpaceItemDecorator(10));
         
         mRcvRecent.setAdapter(mRecentDataAdapter);
         mRcvRecent.setLayoutManager(new LinearLayoutManager(mContext));
-
+        mRcvRecent.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (manager.findFirstVisibleItemPosition() == 0) {
+                    mUpwardFab.setVisibility(View.INVISIBLE);
+                } else {
+                    mUpwardFab.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        mUpwardFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRcvRecent.smoothScrollToPosition(0);
+            }
+        });
         
     }
     

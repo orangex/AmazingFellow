@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.orangex.amazingfellow.R;
@@ -79,7 +78,7 @@ public class NotificationsManager {
 //        builder.setOngoing(true);
         //设置消息的提醒方式，震动提醒：DEFAULT_VIBRATE     声音提醒：NotificationCompat.DEFAULT_SOUND
         //三色灯提醒NotificationCompat.DEFAULT_LIGHTS     以上三种方式一起：DEFAULT_ALL
-        builder.setDefaults(NotificationCompat.DEFAULT_SOUND);
+        builder.setDefaults(Notification.DEFAULT_SOUND);
         //设置震动方式，延迟零秒，震动一秒，延迟一秒、震动一秒
 //        builder.setVibrate(new long[]{0, 1000, 1000, 1000});
     

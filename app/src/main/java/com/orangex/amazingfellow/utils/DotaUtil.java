@@ -60,7 +60,8 @@ public class DotaUtil {// TODO: 2017/11/11 更新 json
     //        }
     //    }
         public static String getHeroPicById(int hero) {
-            
+            if (hero <1)
+                return "http://cdn.max-c.com/app/dota2/%s@3x.png";
             String name = sDotaHeroNames.get(hero - 1).getName();
             if (name==null)
                 name = "";

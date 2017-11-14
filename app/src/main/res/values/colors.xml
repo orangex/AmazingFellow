@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#c3c3c3</color>
-    <color name="colorAccent">#205a88</color>
+    <color name="colorAccent">#455a64</color>
     <color name="tv_gamelevel_high">#d6cba6</color>
     <color name="tv_gamelevel_veryhigh">#b77a19</color>
 </resources>

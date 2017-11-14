@@ -5,6 +5,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.facebook.stetho.Stetho;
+import com.orangex.amazingfellow.constant.Config;
+import com.tencent.bugly.Bugly;
 
 /**
  * Created by orangex on 2017/10/28.
@@ -18,6 +20,7 @@ public class AFApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = getApplicationContext();
+        Bugly.init(sContext, Config.BUGLY_APP_ID, true);
         Stetho.initializeWithDefaults(this);
     }
     

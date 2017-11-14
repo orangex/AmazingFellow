@@ -65,6 +65,7 @@ public class RecentDotaDataViewHolder extends RecentDataViewHolder {
         DotaMatchModel dotaDataModel = (DotaMatchModel) matchModel;
         Picasso.with(itemView.getContext())
                 .load(DotaUtil.getHeroPicById(dotaDataModel.getHero()))
+                .placeholder(R.drawable.item_dota_match_default_bg)
                 .into(mBackgound);
         mTvHeroName.setText(DotaUtil.getHeroLocNameById(dotaDataModel.getHero()));
         mTvLast.setText(dotaDataModel.getLastTime() + "分钟");
@@ -117,7 +118,6 @@ public class RecentDotaDataViewHolder extends RecentDataViewHolder {
             mTVGamelevel.setTextColor(AFApplication.getAppContext().getResources().getColor(R.color.tv_gamelevel_veryhigh));
             mTVGamelevel.setText("Very High");
         }
-        
         //Log.i(TAG, "setData: " + dotaDataModel.toString());
     }
 }

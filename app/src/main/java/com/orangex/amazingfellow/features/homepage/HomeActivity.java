@@ -5,7 +5,6 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
@@ -51,7 +50,6 @@ public class HomeActivity extends AppCompatActivity {// TODO: 2017/11/3 import d
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(R.string.title_app_name);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         mBindSteamDialog = new MaterialDialog.Builder(HomeActivity.this)
                 .title(R.string.title_dialog_bind_steam)
                 .customView(R.layout.dlg_content_bind_steam_guide, false)

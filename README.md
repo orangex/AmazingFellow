@@ -1,5 +1,15 @@
 # 大腿时刻 - 来看看你的哪个队友又 Carry 全场了吧
 
+## 简介
+
+大腿时刻是一个能让你知道最近哪个队友又在游戏中 Carry 了的小工具，暂时仅支持 Dota2。界面长这样
+
+![display](https://github.com/orangex/AmazingFellow/blob/master/display.jpeg)
+
+## 下载
+
+[From GitHub](https://github.com/orangex/AmazingFellow/releases/download/v0.03/app-release.apk)
+
 ## 更新日志
 
 v0.03      2017/11/14	引入 Bugly ，一键上滑至顶部

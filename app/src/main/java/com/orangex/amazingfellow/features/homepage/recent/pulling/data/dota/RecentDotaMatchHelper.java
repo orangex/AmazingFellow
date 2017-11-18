@@ -15,6 +15,8 @@ import com.orangex.amazingfellow.network.steam.dota.DotaMatchDetailResultBean;
 import com.orangex.amazingfellow.rx.ResponseException;
 import com.orangex.amazingfellow.utils.AccountUtil;
 import com.orangex.amazingfellow.utils.DotaUtil;
+import com.tencent.bugly.crashreport.BuglyLog;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.white.easysp.EasySP;
 
 import org.jsoup.Jsoup;
@@ -22,6 +24,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -70,7 +73,16 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                                 page = 0;
                                             }
                                             page++;
-                                            Document document = Jsoup.connect(String.format("http://dotamore.com/match/matchlist/%s.html?p=%d", AccountUtil.getSteamID32By64(id), page)).get();
+                                            Document document;
+                                            String url = String.format("http://dotamore.com/match/matchlist/%s.html?p=%d", AccountUtil.getSteamID32By64(id), page);
+                                            try {
+                                                document = Jsoup.connect(url).get();
+                                            } catch (SocketException e) {
+                                                CrashReport.postCatchedException(e);
+                                                BuglyLog.i(TAG, url);
+                                                throw new ResponseException(e.getMessage(), "访问异常");
+                                            }
+                                            
                                             if (document != null) {
                                                 Log.d(TAG, id+" 访问页数 "+page);
                                                 return document;

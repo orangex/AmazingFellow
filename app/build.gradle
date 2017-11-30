@@ -55,4 +55,5 @@ dependencies {
     implementation 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     implementation 'jp.wasabeef:recyclerview-animators:2.2.7'
     implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 }

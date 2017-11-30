@@ -6,8 +6,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.orangex.amazingfellow.R;
-import com.orangex.amazingfellow.rx.ResponseException;
-import com.orangex.amazingfellow.rx.ResponseObserver;
+import com.orangex.amazingfellow.base.ResponseException;
+import com.orangex.amazingfellow.base.ResponseObserver;
 
 import io.reactivex.disposables.Disposable;
 

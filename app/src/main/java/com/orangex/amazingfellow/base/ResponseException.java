@@ -1,8 +1,7 @@
-package com.orangex.amazingfellow.rx;
+package com.orangex.amazingfellow.base;
 
 import com.alibaba.fastjson.JSONException;
 import com.orangex.amazingfellow.R;
-import com.orangex.amazingfellow.base.AFApplication;
 
 import retrofit2.HttpException;
 

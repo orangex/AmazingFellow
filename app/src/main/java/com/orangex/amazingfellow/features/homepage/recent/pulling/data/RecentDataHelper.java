@@ -14,7 +14,7 @@ import com.orangex.amazingfellow.features.homepage.recent.pulling.PullingJobServ
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.DotaMatchModel;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.DotaMatchModelDao;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.RecentDotaMatchHelper;
-import com.orangex.amazingfellow.rx.ResponseException;
+import com.orangex.amazingfellow.base.ResponseException;
 import com.orangex.amazingfellow.utils.AccountUtil;
 
 import java.util.ArrayList;

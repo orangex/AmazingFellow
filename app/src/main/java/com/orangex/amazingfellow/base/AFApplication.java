@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.facebook.stetho.Stetho;
 import com.orangex.amazingfellow.constant.Config;
+import com.orangex.amazingfellow.utils.WXAPI;
 import com.tencent.bugly.Bugly;
 
 /**
@@ -22,6 +23,8 @@ public class AFApplication extends Application {
         sContext = getApplicationContext();
         Bugly.init(sContext, Config.BUGLY_APP_ID, true);
         Stetho.initializeWithDefaults(this);
+        WXAPI.regToWx(sContext);
+        
     }
     
     public static Context getAppContext() {

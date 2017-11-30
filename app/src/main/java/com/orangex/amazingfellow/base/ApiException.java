@@ -1,7 +1,6 @@
-package com.orangex.amazingfellow.rx;
+package com.orangex.amazingfellow.base;
 
 import com.orangex.amazingfellow.R;
-import com.orangex.amazingfellow.base.AFApplication;
 
 /**
  * Created by chengyuan.wang on 2017/10/30.

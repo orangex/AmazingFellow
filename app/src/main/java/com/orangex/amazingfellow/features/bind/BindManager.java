@@ -13,8 +13,8 @@ import com.orangex.amazingfellow.network.steam.FriendListResultBean;
 import com.orangex.amazingfellow.network.steam.FriendListResultBean.FriendslistBean.FriendsBean;
 import com.orangex.amazingfellow.network.steam.ISteamApiService;
 import com.orangex.amazingfellow.network.steam.ResolveVanityURLResultBean;
-import com.orangex.amazingfellow.rx.ApiException;
-import com.orangex.amazingfellow.rx.ResponseException;
+import com.orangex.amazingfellow.base.ApiException;
+import com.orangex.amazingfellow.base.ResponseException;
 import com.orangex.amazingfellow.utils.AccountUtil;
 import com.white.easysp.EasySP;
 

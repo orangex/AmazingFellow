@@ -1,4 +1,4 @@
-package com.orangex.amazingfellow.rx;
+package com.orangex.amazingfellow.base;
 
 import io.reactivex.Observer;
 

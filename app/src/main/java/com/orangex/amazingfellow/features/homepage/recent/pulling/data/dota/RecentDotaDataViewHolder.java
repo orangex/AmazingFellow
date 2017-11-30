@@ -1,6 +1,7 @@
 package com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,10 +12,12 @@ import com.orangex.amazingfellow.base.AFApplication;
 import com.orangex.amazingfellow.features.homepage.recent.RecentDataViewHolder;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
 import com.orangex.amazingfellow.utils.DotaUtil;
+import com.orangex.amazingfellow.utils.ShareUtil;
 import com.orangex.amazingfellow.utils.TypefaceUtil;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by orangex on 2017/11/3.
@@ -54,6 +57,19 @@ public class RecentDotaDataViewHolder extends RecentDataViewHolder {
     TextView mTvTimeoffsetdesc;
     @BindView(R.id.tv_game_level)
     TextView mTVGamelevel;
+    
+    @OnClick(R.id.btn_share)
+    void share() {
+        View viewToShare = itemView.findViewById(R.id.item_dota_content);
+        viewToShare.setDrawingCacheEnabled(true);
+        viewToShare.buildDrawingCache(true);
+        Bitmap drawingCache = viewToShare.getDrawingCache();
+        
+        if (drawingCache != null) {
+            ShareUtil.sharePic(Bitmap.createBitmap(drawingCache));
+            viewToShare.setDrawingCacheEnabled(false);
+        }
+    }
     private static final String TAG ="datui "+ RecentDotaDataViewHolder.class.getSimpleName();
     
     public RecentDotaDataViewHolder(Context context, ViewGroup parent) {

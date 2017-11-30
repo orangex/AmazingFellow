@@ -12,7 +12,7 @@ import com.orangex.amazingfellow.features.homepage.recent.pulling.data.RecentDat
 import com.orangex.amazingfellow.network.RetrofitHelper;
 import com.orangex.amazingfellow.network.steam.ISteamApiService;
 import com.orangex.amazingfellow.network.steam.dota.DotaMatchDetailResultBean;
-import com.orangex.amazingfellow.rx.ResponseException;
+import com.orangex.amazingfellow.base.ResponseException;
 import com.orangex.amazingfellow.utils.AccountUtil;
 import com.orangex.amazingfellow.utils.DotaUtil;
 import com.tencent.bugly.crashreport.BuglyLog;
@@ -77,7 +77,7 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                             String url = String.format("http://dotamore.com/match/matchlist/%s.html?p=%d", AccountUtil.getSteamID32By64(id), page);
                                             try {
                                                 document = Jsoup.connect(url).get();
-                                            } catch (SocketException e) {
+                                            } catch (RuntimeException|SocketException e) {
                                                 CrashReport.postCatchedException(e);
                                                 BuglyLog.i(TAG, url);
                                                 throw new ResponseException(e.getMessage(), "访问异常");
@@ -108,7 +108,6 @@ public class RecentDotaMatchHelper {// TODO: 2017/11/7  rxLifeCircle
                                         String lastpageFirstMatchID = "xowentwt";
                                         @Override
                                         public boolean test(Document document) throws Exception {
-    
                                             try {
                                                 String current = document.select("tbody[class=cursor_pointer]").get(0).child(0).attr("url");
                                                 if (current.equals(lastpageFirstMatchID)) {

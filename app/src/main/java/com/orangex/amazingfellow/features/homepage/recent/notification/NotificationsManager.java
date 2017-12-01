@@ -9,11 +9,13 @@ import android.util.Log;
 
 import com.orangex.amazingfellow.R;
 import com.orangex.amazingfellow.base.AFApplication;
+import com.orangex.amazingfellow.constant.PrefKeys;
 import com.orangex.amazingfellow.features.homepage.HomeActivity;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.MatchModel;
 import com.orangex.amazingfellow.features.homepage.recent.pulling.data.dota.DotaMatchModel;
 import com.orangex.amazingfellow.utils.APPUtil;
 import com.orangex.amazingfellow.utils.DotaUtil;
+import com.white.easysp.EasySP;
 
 import java.util.List;
 
@@ -52,11 +54,18 @@ public class NotificationsManager {
         //        mBuilder.setLargeIcon(bitmap);
         //设置标题
         builder.setContentTitle("震惊!");
+        String mvpContent = String.format("%s刚刚使用%s拿下了MVP", model.getPlayerName(), DotaUtil.getHeroLocNameById(model.getHero()));
+        String gloryContent = String.format("%s刚刚使用%s完成了一场虽败犹荣的比赛", model.getPlayerName(), DotaUtil.getHeroLocNameById(model.getHero()));
+        if (model.getSteamID64().equals(EasySP.init(AFApplication.getAppContext()).getString(PrefKeys.STEAM_ID))) {
+            builder.setContentTitle("恭喜!");
+            mvpContent += ",这特么还不去吹一波？";
+            gloryContent += ",这特么还不去吹一波？";
+        }
         //设置通知正文
         if (model.getMvpType() == DotaMatchModel.MVP_TYPE_MVP) {
-            builder.setContentText(String.format("%s刚刚使用%s拿下了MVP,为他打Call", model.getPlayerName(), DotaUtil.getHeroLocNameById(model.getHero())));
+            builder.setContentText(mvpContent);
         } else if (model.getMvpType() == DotaMatchModel.MVP_TYPE_GLORIOUS){
-            builder.setContentText(String.format("%s刚刚使用%s完成了一场虽败犹荣的比赛,", model.getPlayerName(), DotaUtil.getHeroLocNameById(model.getHero())));
+            builder.setContentText(gloryContent);
         }
         
         //设置摘要

@@ -49,6 +49,7 @@ public class RecentDataHelper {
     private static final int RETRY_COUNT = 5;
     
     private static List<MatchModel> sCachedTimeline = new ArrayList<>();
+    
     private static boolean isRefreshing = false;
     private static boolean isLoadingMore = false;
     

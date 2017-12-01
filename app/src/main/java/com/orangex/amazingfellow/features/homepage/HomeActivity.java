@@ -24,10 +24,22 @@ import com.orangex.amazingfellow.view.ProgressDialogObserver;
 
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
+
 public class HomeActivity extends AppCompatActivity {// TODO: 2017/11/3 import dagger2
     private static final String TAG ="datui "+ HomeActivity.class.getSimpleName();
     private RecentFragment mRecentFragment;
     final ProgressDialogObserver<List<String>> bindSteamIdObserver = new ProgressDialogObserver<List<String>>(HomeActivity.this) {
+        @Override
+        public void onSubscribe(Disposable d) {
+                boolean showMinMax = true;
+                dialog= new MaterialDialog.Builder(context)
+                        .content("接下来的第一次加载可能会比较久...")
+                        .progress(true, 0)
+                        .progressIndeterminateStyle(true)
+                        .show();
+        }
+    
         @Override
         public void onNext(List<String> strings) {
             Log.i(TAG, "bind complete at "+ DateUtils.formatDateTime(HomeActivity.this,System.currentTimeMillis(),DateUtils.FORMAT_ABBREV_ALL));
